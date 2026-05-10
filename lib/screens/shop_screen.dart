@@ -13,15 +13,15 @@ class _SkinItem {
   final String name;
   final int price;
   final Color primary;
-  final Color wing;
-  final Color cockpit;
+  final Color pants;
+  final Color highlight;
   const _SkinItem({
     required this.id,
     required this.name,
     required this.price,
     required this.primary,
-    required this.wing,
-    required this.cockpit,
+    required this.pants,
+    required this.highlight,
   });
 }
 
@@ -54,76 +54,76 @@ class _NovaItem {
 const _skins = [
   _SkinItem(
     id: 'default',
-    name: 'Gold Fighter',
+    name: 'Standard Gear',
     price: 0,
-    primary: Color(0xFFFFD700),
-    wing: Color(0xFFDDB500),
-    cockpit: Color(0xFF00E5FF),
+    primary: Color(0xFF4CAF50),
+    pants: Color(0xFF2E7D32),
+    highlight: Color(0xFFA5D6A7),
   ),
   _SkinItem(
     id: 'ice',
-    name: 'Ice Falcon',
+    name: 'Arctic Vest',
     price: 300,
     primary: Color(0xFF4DD0E1),
-    wing: Color(0xFF0097A7),
-    cockpit: Color(0xFFE0F7FA),
+    pants: Color(0xFF0097A7),
+    highlight: Color(0xFFE0F7FA),
   ),
   _SkinItem(
     id: 'flame',
-    name: 'Flame Hawk',
+    name: 'Hazmat Suit',
     price: 500,
     primary: Color(0xFFFF5722),
-    wing: Color(0xFFBF360C),
-    cockpit: Color(0xFFFFAB91),
+    pants: Color(0xFFBF360C),
+    highlight: Color(0xFFFFAB91),
   ),
   _SkinItem(
     id: 'shadow',
-    name: 'Shadow Viper',
+    name: 'Tactical Camo',
     price: 700,
-    primary: Color(0xFF9C27B0),
-    wing: Color(0xFF4A0072),
-    cockpit: Color(0xFFEA80FC),
+    primary: Color(0xFF424242),
+    pants: Color(0xFF212121),
+    highlight: Color(0xFF757575),
   ),
   _SkinItem(
     id: 'solar',
-    name: 'Solar Flare',
+    name: 'Riot Gear',
     price: 900,
     primary: Color(0xFFFFD600),
-    wing: Color(0xFFF57F17),
-    cockpit: Color(0xFFFFFFFF),
+    pants: Color(0xFFF57F17),
+    highlight: Color(0xFFFFFFFF),
   ),
   _SkinItem(
     id: 'void',
-    name: 'Void Phantom',
+    name: 'Specter Suit',
     price: 1200,
-    primary: Color(0xFF00B0FF),
-    wing: Color(0xFF0D47A1),
-    cockpit: Color(0xFF80D8FF),
+    primary: Color(0xFF6A1B9A),
+    pants: Color(0xFF4A148C),
+    highlight: Color(0xFFCE93D8),
   ),
 ];
 
 const _shields = [
   _ShieldItem(
     id: 'shield_default',
-    name: 'Energy Barrier',
+    name: 'Riot Shield',
     price: 0,
-    color: Color(0xFF00E5FF),
+    color: Color(0xFF44FF88),
   ),
   _ShieldItem(
     id: 'shield_plasma',
-    name: 'Plasma Guard',
+    name: 'Kevlar',
     price: 250,
     color: Color(0xFFFF6B35),
   ),
   _ShieldItem(
     id: 'shield_void',
-    name: 'Void Ward',
+    name: 'Undead Ward',
     price: 500,
     color: Color(0xFFCC00FF),
   ),
   _ShieldItem(
     id: 'shield_gold',
-    name: 'Gold Guard',
+    name: 'Heavy Plate',
     price: 750,
     color: Color(0xFFFFD700),
   ),
@@ -132,25 +132,25 @@ const _shields = [
 const _novaThemes = [
   _NovaItem(
     id: 'nova_default',
-    name: 'Cyan Beam',
+    name: 'Pulse Burst',
     price: 0,
-    color: Color(0xFF00E5FF),
+    color: Color(0xFF44FF88),
   ),
   _NovaItem(
     id: 'nova_inferno',
-    name: 'Inferno',
+    name: 'Hellfire',
     price: 350,
     color: Color(0xFFFF3D00),
   ),
   _NovaItem(
     id: 'nova_void',
-    name: 'Void Pulse',
+    name: 'Toxic Wave',
     price: 650,
-    color: Color(0xFFFF00FF),
+    color: Color(0xFF66FF00),
   ),
   _NovaItem(
     id: 'nova_eclipse',
-    name: 'Eclipse',
+    name: 'Gold Rush',
     price: 950,
     color: Color(0xFFFFD700),
   ),
@@ -227,10 +227,10 @@ class _ShopScreenState extends State<ShopScreen> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF0D0D2B), Color(0xFF060612)],
+            colors: [Color(0xFF0A0F05), Color(0xFF050800)],
           ),
         ),
         child: SafeArea(
@@ -244,11 +244,11 @@ class _ShopScreenState extends State<ShopScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildEarnNovaSection(),
+                      _buildEarnScrapsSection(),
                       const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _sectionHeader('SHIP SKINS'),
+                        child: _sectionHeader('SURVIVOR SKINS'),
                       ),
                       const SizedBox(height: 10),
                       _buildHorizontalList(
@@ -268,7 +268,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       const SizedBox(height: 24),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _sectionHeader('SHIELD SKINS'),
+                        child: _sectionHeader('ARMOUR SKINS'),
                       ),
                       const SizedBox(height: 10),
                       _buildHorizontalList(
@@ -288,7 +288,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       const SizedBox(height: 24),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _sectionHeader('NOVA BEAM'),
+                        child: _sectionHeader('BLITZ BURST'),
                       ),
                       const SizedBox(height: 10),
                       _buildHorizontalList(
@@ -333,13 +333,13 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  Widget _buildEarnNovaSection() {
+  Widget _buildEarnScrapsSection() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionHeader('EARN NOVA'),
+          _sectionHeader('EARN SCRAPS'),
           const SizedBox(height: 10),
           ValueListenableBuilder<bool>(
             valueListenable: _ads.rewardedAdReady,
@@ -367,7 +367,7 @@ class _ShopScreenState extends State<ShopScreen> {
               'SHOP',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xFFFFD700),
+                color: Color(0xFF66FF00),
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 6,
@@ -377,19 +377,19 @@ class _ShopScreenState extends State<ShopScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0x22FFD700),
+              color: const Color(0x2266FF00),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0x55FFD700)),
+              border: Border.all(color: const Color(0x5566FF00)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('⚡', style: TextStyle(fontSize: 14)),
+                const Text('🔩', style: TextStyle(fontSize: 14)),
                 const SizedBox(width: 4),
                 Text(
                   '${_mgr.totalCoins}',
                   style: const TextStyle(
-                    color: Color(0xFFFFD700),
+                    color: Color(0xFF66FF00),
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
@@ -436,21 +436,21 @@ class _AdBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1A12),
+        color: const Color(0xFF0A1A08),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: ready ? const Color(0x88FFD700) : const Color(0x33FFFFFF),
+          color: ready ? const Color(0x8866FF00) : const Color(0x33FFFFFF),
         ),
       ),
       child: Row(
         children: [
           const Text('📺', style: TextStyle(fontSize: 24)),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Watch an ad',
                   style: TextStyle(
                     color: Color(0xEEF5F5DC),
@@ -458,10 +458,10 @@ class _AdBanner extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(
-                  'Earn $_adCoinsReward ⚡ NOVA instantly',
-                  style: TextStyle(color: Color(0x99F5F5DC), fontSize: 12),
+                  'Earn $_adCoinsReward 🔩 SCRAPS instantly',
+                  style: const TextStyle(color: Color(0x99F5F5DC), fontSize: 12),
                 ),
               ],
             ),
@@ -471,15 +471,15 @@ class _AdBanner extends StatelessWidget {
             onPressed: ready ? onWatch : null,
             style: TextButton.styleFrom(
               backgroundColor:
-                  ready ? const Color(0x33FFD700) : const Color(0x11FFFFFF),
+                  ready ? const Color(0x3366FF00) : const Color(0x11FFFFFF),
               foregroundColor:
-                  ready ? const Color(0xFFFFD700) : const Color(0x55FFFFFF),
+                  ready ? const Color(0xFF66FF00) : const Color(0x55FFFFFF),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
                 side: BorderSide(
                   color: ready
-                      ? const Color(0x88FFD700)
+                      ? const Color(0x8866FF00)
                       : const Color(0x22FFFFFF),
                 ),
               ),
@@ -522,10 +522,10 @@ class _SkinCard extends StatelessWidget {
         width: 56,
         height: 64,
         child: CustomPaint(
-          painter: _ShipPainter(
-            primary: item.primary,
-            wing: item.wing,
-            cockpit: item.cockpit,
+          painter: _SurvivorPainter(
+            jacket: item.primary,
+            pants: item.pants,
+            highlight: item.highlight,
           ),
         ),
       ),
@@ -602,7 +602,7 @@ class _NovaCard extends StatelessWidget {
         width: 56,
         height: 64,
         child: CustomPaint(
-          painter: _NovaPainter(color: item.color),
+          painter: _BlitzPainter(color: item.color),
         ),
       ),
       name: item.name,
@@ -644,12 +644,12 @@ class _ItemCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
       decoration: BoxDecoration(
-        color: equipped ? accentColor.withAlpha(25) : const Color(0xFF12082A),
+        color: equipped ? accentColor.withAlpha(25) : const Color(0xFF0A1A08),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: equipped
               ? accentColor.withAlpha(140)
-              : const Color(0x339B59B6),
+              : const Color(0x3344AA00),
           width: equipped ? 1.5 : 1,
         ),
       ),
@@ -676,11 +676,11 @@ class _ItemCard extends StatelessWidget {
   }
 
   Widget _buildButton() {
-    if (equipped) return _badge('EQUIPPED', const Color(0xFF00E5FF));
-    if (owned) return _actionButton('EQUIP', const Color(0xFF9B59B6), onEquip);
+    if (equipped) return _badge('EQUIPPED', const Color(0xFF44FF88));
+    if (owned) return _actionButton('EQUIP', const Color(0xFF44AA00), onEquip);
     if (price == 0) return _actionButton('GET', const Color(0xFF27AE60), onBuy);
     return _actionButton(
-      '⚡ $price',
+      '🔩 $price',
       canAfford ? const Color(0xFF27AE60) : const Color(0xFF555555),
       canAfford ? onBuy : () {},
     );
@@ -733,57 +733,56 @@ class _ItemCard extends StatelessWidget {
 
 // ── Painters ──────────────────────────────────────────────────────────────────
 
-class _ShipPainter extends CustomPainter {
-  final Color primary, wing, cockpit;
-  const _ShipPainter({required this.primary, required this.wing, required this.cockpit});
+class _SurvivorPainter extends CustomPainter {
+  final Color jacket, pants, highlight;
+  const _SurvivorPainter({required this.jacket, required this.pants, required this.highlight});
 
   @override
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
 
+    // Glow
     canvas.drawCircle(
       Offset(cx, cy),
       size.width * 0.48,
       Paint()
-        ..color = primary.withAlpha(35)
+        ..color = jacket.withAlpha(35)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
     );
 
+    // Legs
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 5, cy + 10), width: 7, height: 12), Paint()..color = pants);
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 5, cy + 10), width: 7, height: 12), Paint()..color = pants);
+
+    // Torso
     canvas.drawPath(
       Path()
-        ..moveTo(cx - 4, cy - 1)
-        ..lineTo(cx - 19, cy + 9)
-        ..lineTo(cx - 8, cy + 10)
-        ..close()
-        ..moveTo(cx + 4, cy - 1)
-        ..lineTo(cx + 19, cy + 9)
-        ..lineTo(cx + 8, cy + 10)
+        ..moveTo(cx, cy - 8)
+        ..lineTo(cx + 8, cy - 2)
+        ..lineTo(cx + 7, cy + 6)
+        ..lineTo(cx, cy + 4)
+        ..lineTo(cx - 7, cy + 6)
+        ..lineTo(cx - 8, cy - 2)
         ..close(),
-      Paint()..color = wing,
+      Paint()..color = jacket,
     );
 
-    canvas.drawPath(
-      Path()
-        ..moveTo(cx, cy - 18)
-        ..lineTo(cx + 7, cy - 3)
-        ..lineTo(cx + 7, cy + 11)
-        ..lineTo(cx, cy + 7)
-        ..lineTo(cx - 7, cy + 11)
-        ..lineTo(cx - 7, cy - 3)
-        ..close(),
-      Paint()..color = primary,
-    );
+    // Arms
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 11, cy - 2), width: 6, height: 12), Paint()..color = jacket);
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 11, cy + 1), width: 6, height: 9), Paint()..color = jacket);
 
+    // Head
+    canvas.drawCircle(Offset(cx, cy - 12), 7, Paint()..color = const Color(0xFFBCAAA4));
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 6), width: 8, height: 10),
-      Paint()..color = cockpit,
+      Rect.fromCenter(center: Offset(cx, cy - 12), width: 7, height: 5),
+      Paint()..color = highlight.withAlpha(180),
     );
   }
 
   @override
-  bool shouldRepaint(_ShipPainter old) =>
-      old.primary != primary || old.wing != wing || old.cockpit != cockpit;
+  bool shouldRepaint(_SurvivorPainter old) =>
+      old.jacket != jacket || old.pants != pants || old.highlight != highlight;
 }
 
 class _ShieldPainter extends CustomPainter {
@@ -795,18 +794,9 @@ class _ShieldPainter extends CustomPainter {
     final cx = size.width / 2;
     final cy = size.height / 2;
 
-    // Ship silhouette (dark)
-    canvas.drawPath(
-      Path()
-        ..moveTo(cx, cy - 16)
-        ..lineTo(cx + 6, cy - 2)
-        ..lineTo(cx + 6, cy + 10)
-        ..lineTo(cx, cy + 6)
-        ..lineTo(cx - 6, cy + 10)
-        ..lineTo(cx - 6, cy - 2)
-        ..close(),
-      Paint()..color = const Color(0x88AAAACC),
-    );
+    // Survivor silhouette (dark)
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy), width: 14, height: 22),
+        Paint()..color = const Color(0x88AAAACC));
 
     // Shield glow
     canvas.drawCircle(
@@ -834,21 +824,19 @@ class _ShieldPainter extends CustomPainter {
   bool shouldRepaint(_ShieldPainter old) => old.color != color;
 }
 
-class _NovaPainter extends CustomPainter {
+class _BlitzPainter extends CustomPainter {
   final Color color;
-  const _NovaPainter({required this.color});
+  const _BlitzPainter({required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
 
-    // Dark background
     canvas.drawRect(
       Rect.fromLTWH(0, 0, size.width, size.height),
-      Paint()..color = const Color(0xFF08081A),
+      Paint()..color = const Color(0xFF050A02),
     );
 
-    // Outer glow beam
     final beamRect = Rect.fromLTWH(cx - 14, 0, 28, size.height);
     canvas.drawRect(
       beamRect,
@@ -857,7 +845,6 @@ class _NovaPainter extends CustomPainter {
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
     );
 
-    // Beam gradient from bottom to top
     canvas.drawRect(
       Rect.fromLTWH(cx - 9, 0, 18, size.height),
       Paint()
@@ -868,7 +855,6 @@ class _NovaPainter extends CustomPainter {
         ),
     );
 
-    // Core line
     canvas.drawLine(
       Offset(cx, size.height),
       Offset(cx, 0),
@@ -877,7 +863,6 @@ class _NovaPainter extends CustomPainter {
         ..strokeWidth = 2,
     );
 
-    // Origin flash
     canvas.drawCircle(
       Offset(cx, size.height - 6),
       8,
@@ -888,5 +873,5 @@ class _NovaPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_NovaPainter old) => old.color != color;
+  bool shouldRepaint(_BlitzPainter old) => old.color != color;
 }

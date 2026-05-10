@@ -8,7 +8,7 @@ import '../components/weapon_homing_bolt.dart';
 import '../components/weapon_rapid_fire.dart';
 import '../components/weapon_spread_shot.dart';
 import '../components/weapon_sword_aura.dart';
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 
 enum UpgradeCategory { weapon, nova, mobility }
 
@@ -17,7 +17,7 @@ abstract class UpgradeCard {
   String get description;
   String get iconLabel;
   UpgradeCategory get category;
-  void apply(NovaboltGame game);
+  void apply(NecroblitzGame game);
 }
 
 class WeaponUpgradeCard extends UpgradeCard {
@@ -33,7 +33,7 @@ class WeaponUpgradeCard extends UpgradeCard {
   @override
   UpgradeCategory get category => UpgradeCategory.weapon;
   @override
-  void apply(NovaboltGame game) => weapon.applyUpgrade();
+  void apply(NecroblitzGame game) => weapon.applyUpgrade();
 }
 
 class NewWeaponCard extends UpgradeCard {
@@ -57,7 +57,7 @@ class NewWeaponCard extends UpgradeCard {
   @override
   UpgradeCategory get category => UpgradeCategory.weapon;
   @override
-  void apply(NovaboltGame game) => game.player.add(factory());
+  void apply(NecroblitzGame game) => game.player.add(factory());
 }
 
 class StatBuffCard extends UpgradeCard {
@@ -65,13 +65,13 @@ class StatBuffCard extends UpgradeCard {
   final String _description;
   final String _icon;
   final UpgradeCategory _category;
-  final void Function(NovaboltGame) _apply;
+  final void Function(NecroblitzGame) _apply;
 
   StatBuffCard({
     required String title,
     required String description,
     required UpgradeCategory category,
-    required void Function(NovaboltGame) apply,
+    required void Function(NecroblitzGame) apply,
     String icon = '★',
   })  : _title = title,
         _description = description,
@@ -88,17 +88,15 @@ class StatBuffCard extends UpgradeCard {
   @override
   UpgradeCategory get category => _category;
   @override
-  void apply(NovaboltGame game) => _apply(game);
+  void apply(NecroblitzGame game) => _apply(game);
 }
 
-List<UpgradeCard> generateUpgradeCards(NovaboltGame game) {
+List<UpgradeCard> generateUpgradeCards(NecroblitzGame game) {
   final rng = math.Random();
   final pool = <UpgradeCard>[];
   final player = game.player;
   final phase = game.bossPhase;
 
-  // Phase-scaled buff values (+5% per boss phase).
-  // Integer percentages avoid floating-point display errors (e.g. 1.15-1 = 0.1499…).
   final fireRatePct   = 15 + phase * 5;
   final weaponDmgPct  = 20 + phase * 5;
   final chargePct     = 20 + phase * 5;
@@ -111,59 +109,56 @@ List<UpgradeCard> generateUpgradeCards(NovaboltGame game) {
   final beamBonus     = beamPct / 100.0;
   final novaDmgBonus  = novaDmgPct / 100.0;
 
-  // --- Weapon category ---
-
   for (final w in player.activeWeapons) {
     if (w.isUpgradeable && w.upgradeLevel < 10) pool.add(WeaponUpgradeCard(w));
   }
 
   if (!player.hasWeapon<WeaponSpreadShot>()) {
     pool.add(NewWeaponCard(
-      title: 'Scatter Cannon',
-      description: 'Fires 3 laser blasts in a wide arc',
+      title: 'Shotgun Blast',
+      description: 'Fires 3 pellets in a wide spread',
       factory: WeaponSpreadShot.new,
     ));
   }
   if (!player.hasWeapon<WeaponRapidFire>()) {
     pool.add(NewWeaponCard(
-      title: 'Pulse Cannon',
-      description: '4 pulses/sec at 60% power each',
+      title: 'Machine Gun',
+      description: '4 shots/sec at 60% power each',
       factory: WeaponRapidFire.new,
     ));
   }
   if (!player.hasWeapon<WeaponHomingBolt>()) {
     pool.add(NewWeaponCard(
-      title: 'Homing Missile',
-      description: 'Self-guided missile seeks the nearest target',
+      title: 'Tracking Dart',
+      description: 'Self-guided dart seeks the nearest zombie',
       factory: WeaponHomingBolt.new,
     ));
   }
   if (!player.hasWeapon<WeaponSwordAura>()) {
     pool.add(NewWeaponCard(
-      title: 'Force Field',
-      description: 'Energy ring shreds nearby enemies continuously',
+      title: 'Blade Ring',
+      description: 'Spinning blades shred nearby zombies',
       factory: WeaponSwordAura.new,
     ));
   }
   if (!player.hasWeapon<WeaponExplosiveBolt>()) {
     pool.add(NewWeaponCard(
-      title: 'Plasma Rocket',
-      description: 'Detonates on impact, blasting all nearby enemies',
+      title: 'Frag Grenade',
+      description: 'Detonates on impact, blasting all nearby zombies',
       factory: WeaponExplosiveBolt.new,
     ));
   }
   if (!player.hasWeapon<WeaponFrostShard>()) {
     pool.add(NewWeaponCard(
-      title: 'EMP Burst',
-      description: 'EMP pulse slows targets to 40% speed for 2s',
+      title: 'Stun Grenade',
+      description: 'Flash-bang slows zombies to 40% speed for 2s',
       factory: WeaponFrostShard.new,
     ));
   }
 
-  // Rare all-weapon damage buff (~10% chance)
   if (rng.nextDouble() < 0.10) {
     pool.add(StatBuffCard(
-      title: 'Targeting Array',
+      title: 'Military Cache',
       description: 'All weapons deal +$weaponDmgPct% damage',
       category: UpgradeCategory.weapon,
       apply: (g) {
@@ -175,7 +170,7 @@ List<UpgradeCard> generateUpgradeCards(NovaboltGame game) {
   }
 
   pool.add(StatBuffCard(
-    title: 'Overcharge',
+    title: 'Ammo Drop',
     description: 'Fire rate +$fireRatePct% for all weapons',
     category: UpgradeCategory.weapon,
     apply: (g) {
@@ -185,38 +180,33 @@ List<UpgradeCard> generateUpgradeCards(NovaboltGame game) {
     },
   ));
 
-  // --- Nova category ---
-
-  // Regular nova stat buffs — always in pool
   pool.addAll([
     StatBuffCard(
-      title: 'Nova Accelerator',
-      description: 'Charge rate +$chargePct% faster',
+      title: 'Rage Builder',
+      description: 'Blitz charge rate +$chargePct% faster',
       category: UpgradeCategory.nova,
       apply: (g) => g.superchargeSystem.chargeMultiplier += chargeBonus,
     ),
     StatBuffCard(
-      title: 'Extended Beam',
-      description: 'Nova lasts $beamPct% longer',
+      title: 'Extended Rampage',
+      description: 'Blitz lasts $beamPct% longer',
       category: UpgradeCategory.nova,
       apply: (g) => g.superchargeSystem.depleteMultiplier =
           (g.superchargeSystem.depleteMultiplier - beamBonus).clamp(0.2, 1.0),
     ),
     StatBuffCard(
-      title: 'Nova Overload',
-      description: 'Nova damage +$novaDmgPct%',
+      title: 'Blitz Overload',
+      description: 'Blitz damage +$novaDmgPct%',
       category: UpgradeCategory.nova,
       icon: '⚡',
       apply: (g) => g.superchargeSystem.damageMultiplier += novaDmgBonus,
     ),
   ]);
 
-  // --- Mobility category ---
-
   if (player.afterburnerStacks < Player.maxAfterburnerStacks) {
     pool.add(StatBuffCard(
-      title: 'Afterburner',
-      description: 'Thrust upgrade — move speed +25%',
+      title: 'Adrenaline Rush',
+      description: 'Survivor moves +25% faster',
       category: UpgradeCategory.mobility,
       apply: (g) {
         g.player.moveSpeed *= 1.25;
@@ -225,7 +215,6 @@ List<UpgradeCard> generateUpgradeCards(NovaboltGame game) {
     ));
   }
 
-  // Pick one random card from each category, then shuffle the result.
   final byCategory = <UpgradeCategory, List<UpgradeCard>>{};
   for (final card in pool) {
     byCategory.putIfAbsent(card.category, () => []).add(card);
@@ -238,7 +227,6 @@ List<UpgradeCard> generateUpgradeCards(NovaboltGame game) {
   }
   picks.shuffle(rng);
 
-  // Guard: pad if pool was tiny (all weapons maxed, no nova, no mobility).
   if (picks.length < 3) {
     final chosen = picks.toSet();
     final leftovers = pool.where((c) => !chosen.contains(c)).toList()..shuffle(rng);
@@ -248,14 +236,13 @@ List<UpgradeCard> generateUpgradeCards(NovaboltGame game) {
   return picks.take(3).toList();
 }
 
-// Rolls 0–2 bonus HP cards (each 20% chance). Caller applies and displays them.
-List<StatBuffCard> rollBonusCards(NovaboltGame game) {
+List<StatBuffCard> rollBonusCards(NecroblitzGame game) {
   final result = <StatBuffCard>[];
   final rng = math.Random();
   if (rng.nextDouble() < 0.20) {
     result.add(StatBuffCard(
-      title: '+25 Hull Plating',
-      description: 'Reinforce hull for +25 max HP',
+      title: '+25 Body Armour',
+      description: 'Scavenged armour plates for +25 max HP',
       category: UpgradeCategory.mobility,
       icon: '♥',
       apply: (g) {
@@ -266,8 +253,8 @@ List<StatBuffCard> rollBonusCards(NovaboltGame game) {
   }
   if (rng.nextDouble() < 0.20) {
     result.add(StatBuffCard(
-      title: 'Repair Drones',
-      description: 'Emergency repair restores 40 HP',
+      title: 'Med Kit',
+      description: 'Emergency bandages restore 40 HP',
       category: UpgradeCategory.mobility,
       icon: '♥',
       apply: (g) {

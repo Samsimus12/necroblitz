@@ -4,14 +4,15 @@ import 'dart:ui';
 import '../data/monster_data.dart';
 import 'monster.dart';
 
+// Bloater zombie — huge bloated mass, slow and heavy.
 class MonsterTank extends Monster {
   MonsterTank({required super.position, int playerLevel = 1})
       : super(stats: tankStats.scaled(playerLevel));
 
   static const _deathColors = [
-    Color(0xFF8B0000), Color(0xFF78909C), Color(0xFFCC00FF),
-    Color(0xFFBB0000), Color(0xFF6600CC), Color(0xFF00BBFF),
-    Color(0xFFFF8800), Color(0xFFFFFFFF), Color(0xFF440088), Color(0xFFCCCCCC),
+    Color(0xFF556B2F), Color(0xFF607060), Color(0xFF44CC00),
+    Color(0xFFBB0000), Color(0xFF44AA00), Color(0xFF00AACC),
+    Color(0xFFFF6600), Color(0xFF888888), Color(0xFF442200), Color(0xFFCC0033),
   ];
 
   @override
@@ -32,11 +33,11 @@ class MonsterTank extends Monster {
 
     switch (game.bossPhase % 10) {
       case 0:
-        _renderOrganic(canvas, cx, cy);
+        _renderRotten(canvas, cx, cy);
       case 1:
-        _renderMechanical(canvas, cx, cy);
+        _renderArmoured(canvas, cx, cy);
       case 2:
-        _renderVoid(canvas, cx, cy);
+        _renderToxic(canvas, cx, cy);
       default:
         _renderThemed(canvas, cx, cy);
     }
@@ -46,344 +47,188 @@ class MonsterTank extends Monster {
     renderFlash(canvas);
   }
 
-  // Hull colour table for phases 0, 3-9 (reuses phase-0 shape).
-  static const _hullColor = [
-    Color(0xFF8B0000), Color(0xFF546E7A), Color(0xFF1A0033), // 0-2
-    Color(0xFF550000), Color(0xFF1A0033), Color(0xFF002244), // 3-5
-    Color(0xFF331100), Color(0xFF030808), Color(0xFF0A0015), Color(0xFF0A0A0A), // 6-9
+  static const _bodyColor = [
+    Color(0xFF3D4A2A), Color(0xFF455060), Color(0xFF0D2000),
+    Color(0xFF550000), Color(0xFF1A3300), Color(0xFF001A1A),
+    Color(0xFF331100), Color(0xFF1A1A1A), Color(0xFF1A0A00), Color(0xFF220011),
   ];
   static const _outlineColor = [
-    Color(0xFFAA2020), Color(0xFF78909C), Color(0xFFCC00FF),
-    Color(0xFFAA0000), Color(0xFF6600CC), Color(0xFF0088FF),
-    Color(0xFFFFAA00), Color(0xFF00FFCC), Color(0xFF5500AA), Color(0xFFAAAAAA),
+    Color(0xFF6A7A4A), Color(0xFF687080), Color(0xFF44CC00),
+    Color(0xFFAA0000), Color(0xFF33AA00), Color(0xFF00AACC),
+    Color(0xFFCC6600), Color(0xFF888888), Color(0xFF552200), Color(0xFFCC0033),
   ];
   static const _eyeColor = [
-    Color(0xFFFF8C00), Color(0xFF00E5FF), Color(0xFFFF00FF),
-    Color(0xFFFF2200), Color(0xFF9900FF), Color(0xFF00FFFF),
-    Color(0xFFFFDD00), Color(0xFF00FFAA), Color(0xFFAA00FF), Color(0xFFFFFFFF),
-  ];
-  static const _engineColor = [
-    Color(0xFFFF6600), Color(0xFF0088FF), Color(0xFFCC00FF),
-    Color(0xFFFF2200), Color(0xFF7700FF), Color(0xFF00AAFF),
-    Color(0xFFFF8800), Color(0xFF00FFCC), Color(0xFF6600CC), Color(0xFFCCCCCC),
+    Color(0xFFFF6600), Color(0xFF00AACC), Color(0xFF88FF00),
+    Color(0xFFFF2200), Color(0xFF88FF00), Color(0xFF00FFCC),
+    Color(0xFFFFAA00), Color(0xFFCCCCCC), Color(0xFFFF4400), Color(0xFFFF0044),
   ];
   static const _glowColor = [
-    Color(0xAAFF4400), Color(0xAA0088FF), Color(0xAACC00FF),
-    Color(0xAACC0000), Color(0xAA6600CC), Color(0xAA0088FF),
-    Color(0xAAAA6600), Color(0xAA00FFAA), Color(0xAA440088), Color(0xAA888888),
+    Color(0x00000000), Color(0x00000000), Color(0xAA44CC00),
+    Color(0xAACC0000), Color(0xAA44AA00), Color(0xAA00AACC),
+    Color(0xAAAA6600), Color(0x00000000), Color(0xAA441100), Color(0xAACC0033),
   ];
 
   void _renderThemed(Canvas canvas, double cx, double cy) {
     final p = (game.bossPhase % 10).clamp(0, 9);
 
-    // Engine glow
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy + 22), width: 22, height: 14),
-      Paint()..color = _glowColor[p]..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
-    );
-
-    final leftPod = Path()
-      ..moveTo(cx - 14, cy - 6)..lineTo(cx - 22, cy - 2)
-      ..lineTo(cx - 22, cy + 14)..lineTo(cx - 14, cy + 12)..close();
-    final rightPod = Path()
-      ..moveTo(cx + 14, cy - 6)..lineTo(cx + 22, cy - 2)
-      ..lineTo(cx + 22, cy + 14)..lineTo(cx + 14, cy + 12)..close();
-    final podPaint = Paint()..color = _hullColor[p].withAlpha(200);
-    canvas.drawPath(leftPod, podPaint);
-    canvas.drawPath(rightPod, podPaint);
-
-    final hull = Path()
-      ..moveTo(cx, cy - 24)..lineTo(cx + 12, cy - 14)
-      ..lineTo(cx + 13, cy + 14)..lineTo(cx + 7, cy + 22)
-      ..lineTo(cx - 7, cy + 22)..lineTo(cx - 13, cy + 14)
-      ..lineTo(cx - 12, cy - 14)..close();
-    canvas.drawPath(hull, Paint()..color = _hullColor[p]);
-    canvas.drawPath(hull, Paint()
-      ..color = _outlineColor[p]..style = PaintingStyle.stroke..strokeWidth = 2.0);
-
-    // Guns
-    final gunPaint = Paint()..color = _hullColor[p].withAlpha(180);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx - 4, cy - 22), width: 4, height: 10), gunPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx + 4, cy - 22), width: 4, height: 10), gunPaint);
-
-    // Bridge + eyes
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 5), width: 13, height: 11),
-        Paint()..color = _hullColor[p].withAlpha(220));
-    canvas.drawCircle(Offset(cx - 3.5, cy - 5), 3.5, Paint()..color = _eyeColor[p]);
-    canvas.drawCircle(Offset(cx + 3.5, cy - 5), 3.5, Paint()..color = _eyeColor[p]);
-
-    // Engine ports
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy + 21), width: 6, height: 4),
-        Paint()..color = _hullColor[p].withAlpha(200));
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 21), width: 6, height: 4),
-        Paint()..color = _hullColor[p].withAlpha(200));
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy + 22), width: 4, height: 3),
-        Paint()..color = _engineColor[p]);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 22), width: 4, height: 3),
-        Paint()..color = _engineColor[p]);
-  }
-
-  // Phase 0 — dark red capital warship
-  void _renderOrganic(Canvas canvas, double cx, double cy) {
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy + 22), width: 22, height: 14),
-      Paint()
-        ..color = const Color(0xAAFF4400)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
-    );
-
-    final leftPod = Path()
-      ..moveTo(cx - 14, cy - 6)
-      ..lineTo(cx - 22, cy - 2)
-      ..lineTo(cx - 22, cy + 14)
-      ..lineTo(cx - 14, cy + 12)
-      ..close();
-    final rightPod = Path()
-      ..moveTo(cx + 14, cy - 6)
-      ..lineTo(cx + 22, cy - 2)
-      ..lineTo(cx + 22, cy + 14)
-      ..lineTo(cx + 14, cy + 12)
-      ..close();
-    final podPaint = Paint()..color = const Color(0xFF6B0000);
-    canvas.drawPath(leftPod, podPaint);
-    canvas.drawPath(rightPod, podPaint);
-
-    final gunPaint = Paint()..color = const Color(0xFF3D0000);
-    canvas.drawRect(Rect.fromLTWH(cx - 25, cy - 7, 5, 9), gunPaint);
-    canvas.drawRect(Rect.fromLTWH(cx + 20, cy - 7, 5, 9), gunPaint);
-
-    final hull = Path()
-      ..moveTo(cx, cy - 24)
-      ..lineTo(cx + 12, cy - 14)
-      ..lineTo(cx + 13, cy + 14)
-      ..lineTo(cx + 7, cy + 22)
-      ..lineTo(cx - 7, cy + 22)
-      ..lineTo(cx - 13, cy + 14)
-      ..lineTo(cx - 12, cy - 14)
-      ..close();
-    canvas.drawPath(hull, Paint()..color = const Color(0xFF8B0000));
-
-    final innerHull = Path()
-      ..moveTo(cx, cy - 18)
-      ..lineTo(cx + 8, cy - 10)
-      ..lineTo(cx + 9, cy + 10)
-      ..lineTo(cx + 4, cy + 18)
-      ..lineTo(cx - 4, cy + 18)
-      ..lineTo(cx - 9, cy + 10)
-      ..lineTo(cx - 8, cy - 10)
-      ..close();
-    canvas.drawPath(innerHull, Paint()..color = const Color(0xFF3D0000));
-
-    canvas.drawPath(hull, Paint()
-      ..color = const Color(0xFFAA2020)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0);
-
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx - 4, cy - 22), width: 4, height: 10), gunPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx + 4, cy - 22), width: 4, height: 10), gunPaint);
-
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 5), width: 13, height: 11),
-      Paint()..color = const Color(0xFF5A0000),
-    );
-    final eyePaint = Paint()..color = const Color(0xFFFF8C00);
-    canvas.drawCircle(Offset(cx - 3.5, cy - 5), 3.5, eyePaint);
-    canvas.drawCircle(Offset(cx + 3.5, cy - 5), 3.5, eyePaint);
-    final pupilPaint = Paint()..color = const Color(0xFF1A0000);
-    canvas.drawCircle(Offset(cx - 3.5, cy - 5), 1.5, pupilPaint);
-    canvas.drawCircle(Offset(cx + 3.5, cy - 5), 1.5, pupilPaint);
-
-    final portPaint = Paint()..color = const Color(0xFF1A0000);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy + 21), width: 6, height: 4), portPaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 21), width: 6, height: 4), portPaint);
-    final firePaint = Paint()..color = const Color(0xFFFF6600);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy + 22), width: 4, height: 3), firePaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 22), width: 4, height: 3), firePaint);
-  }
-
-  // Phase 1 — steel/gray industrial juggernaut
-  void _renderMechanical(Canvas canvas, double cx, double cy) {
-    // Blue-white engine glow
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy + 22), width: 22, height: 14),
-      Paint()
-        ..color = const Color(0xAA0088FF)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
-    );
-
-    // Blockier side pods
-    final leftPod = Path()
-      ..moveTo(cx - 13, cy - 6)
-      ..lineTo(cx - 24, cy - 4)
-      ..lineTo(cx - 24, cy + 14)
-      ..lineTo(cx - 13, cy + 12)
-      ..close();
-    final rightPod = Path()
-      ..moveTo(cx + 13, cy - 6)
-      ..lineTo(cx + 24, cy - 4)
-      ..lineTo(cx + 24, cy + 14)
-      ..lineTo(cx + 13, cy + 12)
-      ..close();
-    canvas.drawPath(leftPod, Paint()..color = const Color(0xFF37474F));
-    canvas.drawPath(rightPod, Paint()..color = const Color(0xFF37474F));
-    // Pod edge
-    canvas.drawPath(leftPod, Paint()
-      ..color = const Color(0xFF546E7A)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0);
-    canvas.drawPath(rightPod, Paint()
-      ..color = const Color(0xFF546E7A)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0);
-
-    final gunPaint = Paint()..color = const Color(0xFF263238);
-    canvas.drawRect(Rect.fromLTWH(cx - 27, cy - 7, 5, 9), gunPaint);
-    canvas.drawRect(Rect.fromLTWH(cx + 22, cy - 7, 5, 9), gunPaint);
-
-    final hull = Path()
-      ..moveTo(cx, cy - 24)
-      ..lineTo(cx + 12, cy - 14)
-      ..lineTo(cx + 13, cy + 14)
-      ..lineTo(cx + 7, cy + 22)
-      ..lineTo(cx - 7, cy + 22)
-      ..lineTo(cx - 13, cy + 14)
-      ..lineTo(cx - 12, cy - 14)
-      ..close();
-    canvas.drawPath(hull, Paint()..color = const Color(0xFF546E7A));
-
-    final innerHull = Path()
-      ..moveTo(cx, cy - 18)
-      ..lineTo(cx + 8, cy - 10)
-      ..lineTo(cx + 9, cy + 10)
-      ..lineTo(cx + 4, cy + 18)
-      ..lineTo(cx - 4, cy + 18)
-      ..lineTo(cx - 9, cy + 10)
-      ..lineTo(cx - 8, cy - 10)
-      ..close();
-    canvas.drawPath(innerHull, Paint()..color = const Color(0xFF37474F));
-
-    canvas.drawPath(hull, Paint()
-      ..color = const Color(0xFF78909C)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0);
-
-    // Vent slits on hull
-    for (int i = -1; i <= 1; i++) {
-      canvas.drawRect(
-        Rect.fromLTWH(cx - 3, cy + 2 + i * 5.0, 6, 2),
-        Paint()..color = const Color(0xFF263238),
+    final glow = _glowColor[p];
+    if (glow.a > 0) {
+      canvas.drawOval(
+        Rect.fromCenter(center: Offset(cx, cy), width: 52, height: 52),
+        Paint()..color = glow..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
       );
     }
 
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx - 4, cy - 22), width: 4, height: 10), gunPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx + 4, cy - 22), width: 4, height: 10), gunPaint);
-
-    // Command bridge
+    // Bloated round body
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 5), width: 13, height: 11),
-      Paint()..color = const Color(0xFF37474F),
+      Rect.fromCenter(center: Offset(cx, cy), width: 46, height: 40),
+      Paint()..color = _bodyColor[p],
     );
-    // Cyan viewport slits
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 3.5, cy - 5), width: 5, height: 3),
-        Paint()..color = const Color(0xFF00E5FF));
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 3.5, cy - 5), width: 5, height: 3),
-        Paint()..color = const Color(0xFF00E5FF));
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy), width: 46, height: 40),
+      Paint()..color = _outlineColor[p]..style = PaintingStyle.stroke..strokeWidth = 2.0,
+    );
 
-    // Engine ports (blue)
-    final portPaint = Paint()..color = const Color(0xFF1A2327);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy + 21), width: 6, height: 4), portPaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 21), width: 6, height: 4), portPaint);
-    final firePaint = Paint()..color = const Color(0xFF0088FF);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy + 22), width: 4, height: 3), firePaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 22), width: 4, height: 3), firePaint);
+    // Stubby arms
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 26, cy + 5), width: 10, height: 6), Paint()..color = _bodyColor[p]);
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 26, cy + 5), width: 10, height: 6), Paint()..color = _bodyColor[p]);
+
+    // Head (top)
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 18), width: 20, height: 16), Paint()..color = _bodyColor[p]);
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 18), width: 20, height: 16),
+        Paint()..color = _outlineColor[p]..style = PaintingStyle.stroke..strokeWidth = 1.5);
+    // Eyes
+    canvas.drawCircle(Offset(cx - 4, cy - 19), 3.0, Paint()..color = _eyeColor[p]);
+    canvas.drawCircle(Offset(cx + 4, cy - 19), 3.0, Paint()..color = _eyeColor[p]);
   }
 
-  // Phase 2 — void-corrupted dreadnought
-  void _renderVoid(Canvas canvas, double cx, double cy) {
-    // Purple void engine glow
+  // Phase 0 — rotten bloated zombie corpse
+  void _renderRotten(Canvas canvas, double cx, double cy) {
+    // Glow of decay
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy + 22), width: 22, height: 14),
-      Paint()
-        ..color = const Color(0xAACC00FF)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
+      Rect.fromCenter(center: Offset(cx, cy), width: 50, height: 44),
+      Paint()..color = const Color(0x2244AA00)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
     );
 
-    final leftPod = Path()
-      ..moveTo(cx - 14, cy - 6)
-      ..lineTo(cx - 22, cy - 2)
-      ..lineTo(cx - 22, cy + 14)
-      ..lineTo(cx - 14, cy + 12)
-      ..close();
-    final rightPod = Path()
-      ..moveTo(cx + 14, cy - 6)
-      ..lineTo(cx + 22, cy - 2)
-      ..lineTo(cx + 22, cy + 14)
-      ..lineTo(cx + 14, cy + 12)
-      ..close();
-    canvas.drawPath(leftPod, Paint()..color = const Color(0xFF0D001A));
-    canvas.drawPath(rightPod, Paint()..color = const Color(0xFF0D001A));
-    canvas.drawPath(leftPod, Paint()
-      ..color = const Color(0xFF9900CC)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0);
-    canvas.drawPath(rightPod, Paint()
-      ..color = const Color(0xFF9900CC)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0);
-
-    final gunPaint = Paint()..color = const Color(0xFF110022);
-    canvas.drawRect(Rect.fromLTWH(cx - 25, cy - 7, 5, 9), gunPaint);
-    canvas.drawRect(Rect.fromLTWH(cx + 20, cy - 7, 5, 9), gunPaint);
-
-    final hull = Path()
-      ..moveTo(cx, cy - 24)
-      ..lineTo(cx + 12, cy - 14)
-      ..lineTo(cx + 13, cy + 14)
-      ..lineTo(cx + 7, cy + 22)
-      ..lineTo(cx - 7, cy + 22)
-      ..lineTo(cx - 13, cy + 14)
-      ..lineTo(cx - 12, cy - 14)
-      ..close();
-    canvas.drawPath(hull, Paint()..color = const Color(0xFF1A0033));
-
-    final innerHull = Path()
-      ..moveTo(cx, cy - 18)
-      ..lineTo(cx + 8, cy - 10)
-      ..lineTo(cx + 9, cy + 10)
-      ..lineTo(cx + 4, cy + 18)
-      ..lineTo(cx - 4, cy + 18)
-      ..lineTo(cx - 9, cy + 10)
-      ..lineTo(cx - 8, cy - 10)
-      ..close();
-    canvas.drawPath(innerHull, Paint()..color = const Color(0xFF0D0020));
-
-    canvas.drawPath(hull, Paint()
-      ..color = const Color(0xFFCC00FF)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0);
-
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx - 4, cy - 22), width: 4, height: 10), gunPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx + 4, cy - 22), width: 4, height: 10), gunPaint);
-
-    // Command bridge with three void eyes
+    // Belly mass
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 5), width: 13, height: 11),
-      Paint()..color = const Color(0xFF110022),
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 46, height: 40),
+      Paint()..color = const Color(0xFF3D4A2A),
     );
-    // Central dominant eye
-    canvas.drawCircle(Offset(cx, cy - 5), 3.5, Paint()..color = const Color(0xFFCC00FF));
-    canvas.drawCircle(Offset(cx, cy - 5), 1.8, Paint()..color = const Color(0xFFFF00FF));
-    canvas.drawCircle(Offset(cx, cy - 5), 0.8, Paint()..color = const Color(0xFF000000));
-    // Flanking eyes
-    canvas.drawCircle(Offset(cx - 5, cy - 4), 2.0, Paint()..color = const Color(0xFF9900CC));
-    canvas.drawCircle(Offset(cx + 5, cy - 4), 2.0, Paint()..color = const Color(0xFF9900CC));
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 46, height: 40),
+      Paint()..color = const Color(0xFF6A7A4A)..style = PaintingStyle.stroke..strokeWidth = 2.0,
+    );
 
-    // Engine ports (void purple)
-    final portPaint = Paint()..color = const Color(0xFF0D0020);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy + 21), width: 6, height: 4), portPaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 21), width: 6, height: 4), portPaint);
-    final firePaint = Paint()..color = const Color(0xFFCC00FF);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy + 22), width: 4, height: 3), firePaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 22), width: 4, height: 3), firePaint);
+    // Boils
+    canvas.drawCircle(Offset(cx - 10, cy + 2), 5, Paint()..color = const Color(0xFF556B2F));
+    canvas.drawCircle(Offset(cx + 8, cy + 8), 4, Paint()..color = const Color(0xFF556B2F));
+
+    // Stubby arms
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 25, cy + 6), width: 10, height: 6), Paint()..color = const Color(0xFF3D4A2A));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 25, cy + 6), width: 10, height: 6), Paint()..color = const Color(0xFF3D4A2A));
+    // Clawed fingers
+    for (int i = -1; i <= 1; i++) {
+      canvas.drawOval(Rect.fromCenter(center: Offset(cx - 30 + i * 1.5, cy + 5), width: 3, height: 5), Paint()..color = const Color(0xFF4A5A3A));
+      canvas.drawOval(Rect.fromCenter(center: Offset(cx + 30 + i * 1.5, cy + 5), width: 3, height: 5), Paint()..color = const Color(0xFF4A5A3A));
+    }
+
+    // Head
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 16), width: 22, height: 18), Paint()..color = const Color(0xFF4A5A3A));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 16), width: 22, height: 18),
+        Paint()..color = const Color(0xFF6A7A4A)..style = PaintingStyle.stroke..strokeWidth = 1.5);
+    // Sunken eyes
+    canvas.drawCircle(Offset(cx - 4, cy - 17), 3.5, Paint()..color = const Color(0xFFFF6600));
+    canvas.drawCircle(Offset(cx + 4, cy - 17), 3.5, Paint()..color = const Color(0xFFFF6600));
+    canvas.drawCircle(Offset(cx - 4, cy - 17), 1.8, Paint()..color = const Color(0xFF1A0000));
+    canvas.drawCircle(Offset(cx + 4, cy - 17), 1.8, Paint()..color = const Color(0xFF1A0000));
+    // Mouth gash
+    canvas.drawArc(Rect.fromCenter(center: Offset(cx, cy - 12), width: 14, height: 6), 0.2, math.pi - 0.4, false,
+        Paint()..color = const Color(0xFF1A0000)..strokeWidth = 2..style = PaintingStyle.stroke);
+  }
+
+  // Phase 1 — armoured zombie with scrap metal plating
+  void _renderArmoured(Canvas canvas, double cx, double cy) {
+    // Bulk shadow
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 50, height: 44),
+      Paint()..color = const Color(0xFF2A3030)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+    );
+
+    // Body mass with armour plating
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 46, height: 40),
+      Paint()..color = const Color(0xFF404A50),
+    );
+
+    // Armour plates
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Rect.fromCenter(center: Offset(cx, cy + 4), width: 34, height: 28), const Radius.circular(4)),
+      Paint()..color = const Color(0xFF546E7A),
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Rect.fromCenter(center: Offset(cx, cy + 4), width: 34, height: 28), const Radius.circular(4)),
+      Paint()..color = const Color(0xFF90A4AE)..style = PaintingStyle.stroke..strokeWidth = 1.5,
+    );
+    // Bolt rivets
+    for (final pos in const [Offset(-12.0, -4.0), Offset(12.0, -4.0), Offset(-12.0, 8.0), Offset(12.0, 8.0)]) {
+      canvas.drawCircle(Offset(cx + pos.dx, cy + pos.dy + 4), 2.5, Paint()..color = const Color(0xFF263238));
+      canvas.drawCircle(Offset(cx + pos.dx, cy + pos.dy + 4), 2.5,
+          Paint()..color = const Color(0xFF78909C)..style = PaintingStyle.stroke..strokeWidth = 0.8);
+    }
+
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 46, height: 40),
+      Paint()..color = const Color(0xFF90A4AE)..style = PaintingStyle.stroke..strokeWidth = 1.5,
+    );
+
+    // Arms with armour
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 26, cy + 6), width: 12, height: 7), Paint()..color = const Color(0xFF546E7A));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 26, cy + 6), width: 12, height: 7), Paint()..color = const Color(0xFF546E7A));
+
+    // Armoured head
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 16), width: 24, height: 20), Paint()..color = const Color(0xFF546E7A));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 16), width: 24, height: 20),
+        Paint()..color = const Color(0xFF90A4AE)..style = PaintingStyle.stroke..strokeWidth = 1.5);
+    // Visor slits
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 4, cy - 17), width: 6, height: 3), Paint()..color = const Color(0xFF00AACC));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy - 17), width: 6, height: 3), Paint()..color = const Color(0xFF00AACC));
+  }
+
+  // Phase 2 — toxic bloater dripping bile
+  void _renderToxic(Canvas canvas, double cx, double cy) {
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 54, height: 48),
+      Paint()..color = const Color(0xAA44CC00)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
+    );
+
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 46, height: 40),
+      Paint()..color = const Color(0xFF0D2000),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 4), width: 46, height: 40),
+      Paint()..color = const Color(0xFF44CC00)..style = PaintingStyle.stroke..strokeWidth = 2.0,
+    );
+
+    // Bile drips
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 8, cy + 22), width: 5, height: 8), Paint()..color = const Color(0xFF44CC00));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 10, cy + 22), width: 4, height: 6), Paint()..color = const Color(0xFF44CC00));
+
+    // Arms
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 26, cy + 6), width: 12, height: 7), Paint()..color = const Color(0xFF0D2000));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 26, cy + 6), width: 12, height: 7), Paint()..color = const Color(0xFF0D2000));
+
+    // Head
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 16), width: 24, height: 20), Paint()..color = const Color(0xFF0D2000));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 16), width: 24, height: 20),
+        Paint()..color = const Color(0xFF44CC00)..style = PaintingStyle.stroke..strokeWidth = 1.5);
+
+    // Glowing toxic eyes
+    canvas.drawCircle(Offset(cx - 4, cy - 17), 3.5, Paint()..color = const Color(0xFF88FF00));
+    canvas.drawCircle(Offset(cx + 4, cy - 17), 3.5, Paint()..color = const Color(0xFF88FF00));
+    canvas.drawCircle(Offset(cx, cy - 17), 5, Paint()
+      ..color = const Color(0x4488FF00)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5));
   }
 }

@@ -1,5 +1,5 @@
-name: novabolt
-description: "Novabolt — space arena survival game."
+name: necroblitz
+description: "NecroBlitz — zombie apocalypse arena survival game."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -60,7 +60,7 @@ flutter_launcher_icons:
     generate: false
 
 flutter_native_splash:
-  color: "#0D0D2B"
+  color: "#0A0F05"
   background_image: "assets/splash/splash.png"
   android: true
   ios: true

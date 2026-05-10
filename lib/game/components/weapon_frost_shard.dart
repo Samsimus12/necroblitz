@@ -10,7 +10,7 @@ class WeaponFrostShard extends Weapon {
   WeaponFrostShard() : super(damage: 10, fireRate: 1.2);
 
   @override
-  String get displayName => 'EMP Burst';
+  String get displayName => 'Stun Grenade';
 
   @override
   void fire(Vector2 playerPos, Vector2 direction) {

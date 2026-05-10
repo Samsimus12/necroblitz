@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'ads/ad_manager.dart';
 import 'audio/audio_manager.dart';
 import 'coins/coin_manager.dart';
-import 'game/novabolt_game.dart';
+import 'game/necroblitz_game.dart';
 import 'stats/stats_manager.dart';
 import 'screens/game_controls_overlay.dart';
 import 'screens/game_over_screen.dart';
@@ -20,17 +20,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  runApp(const NovaboltApp());
+  runApp(const NecroblitzApp());
 }
 
-class NovaboltApp extends StatefulWidget {
-  const NovaboltApp({super.key});
+class NecroblitzApp extends StatefulWidget {
+  const NecroblitzApp({super.key});
 
   @override
-  State<NovaboltApp> createState() => _NovaboltAppState();
+  State<NecroblitzApp> createState() => _NecroblitzAppState();
 }
 
-class _NovaboltAppState extends State<NovaboltApp> {
+class _NecroblitzAppState extends State<NecroblitzApp> {
   bool _loaded = false;
   bool _inGame = false;
 
@@ -83,8 +83,8 @@ class _NovaboltAppState extends State<NovaboltApp> {
   }
 
   Widget _buildGame() {
-    return GameWidget<NovaboltGame>.controlled(
-      gameFactory: NovaboltGame.new,
+    return GameWidget<NecroblitzGame>.controlled(
+      gameFactory: NecroblitzGame.new,
       initialActiveOverlays: const ['GameControls'],
       overlayBuilderMap: {
         'GameControls': (context, game) =>

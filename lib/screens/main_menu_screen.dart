@@ -29,10 +29,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
       context: context,
       builder: (_) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          backgroundColor: const Color(0xFF12082A),
+          backgroundColor: const Color(0xFF0A1A08),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(color: Color(0xFF9B59B6), width: 1.5),
+            side: const BorderSide(color: Color(0xFF44AA00), width: 1.5),
           ),
           title: const Text(
             'Settings',
@@ -53,7 +53,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                   setDialogState(() {});
                   setState(() {});
                 },
-                activeColor: const Color(0xFF9B59B6),
+                activeColor: const Color(0xFF44AA00),
               ),
             ],
           ),
@@ -73,7 +73,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFF0D0D2B), Color(0xFF060612)],
+                colors: [Color(0xFF0A0F05), Color(0xFF050800)],
               ),
             ),
           ),
@@ -89,21 +89,21 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                 children: [
                   const Spacer(flex: 2),
                   const Text(
-                    'NOVABOLT',
+                    'NECROBLITZ',
                     style: TextStyle(
-                      color: Color(0xFFFFD700),
-                      fontSize: 54,
+                      color: Color(0xFF66FF00),
+                      fontSize: 48,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 10,
+                      letterSpacing: 8,
                       shadows: [
-                        Shadow(color: Color(0xBBFFD700), blurRadius: 24),
-                        Shadow(color: Color(0x66F4A800), blurRadius: 60),
+                        Shadow(color: Color(0xBB66FF00), blurRadius: 24),
+                        Shadow(color: Color(0x66CC4400), blurRadius: 60),
                       ],
                     ),
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'SURVIVE · UPGRADE · CONQUER',
+                    'SURVIVE · UPGRADE · ELIMINATE',
                     style: TextStyle(
                       color: Color(0x99F5F5DC),
                       fontSize: 12,
@@ -114,19 +114,19 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _WeaponDot(color: const Color(0xFF00E5FF), label: 'Laser'),
-                      _WeaponDot(color: const Color(0xFF9B59B6), label: 'Missile'),
-                      _WeaponDot(color: const Color(0xFFF4A800), label: 'Scatter'),
-                      _WeaponDot(color: const Color(0xFFFF6B35), label: 'Pulse'),
-                      _WeaponDot(color: const Color(0xFFFFD700), label: 'Field'),
-                      _WeaponDot(color: const Color(0xFF88D8F0), label: 'EMP'),
+                      _WeaponDot(color: const Color(0xFF00E5FF), label: 'Pistol'),
+                      _WeaponDot(color: const Color(0xFF9B59B6), label: 'Dart'),
+                      _WeaponDot(color: const Color(0xFFF4A800), label: 'Shotgun'),
+                      _WeaponDot(color: const Color(0xFFFF6B35), label: 'MG'),
+                      _WeaponDot(color: const Color(0xFF66FF00), label: 'Blades'),
+                      _WeaponDot(color: const Color(0xFF88D8F0), label: 'Stun'),
                     ],
                   ),
                   const Spacer(),
                   ElevatedButton(
                     onPressed: widget.onPlay,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF9B59B6),
+                      backgroundColor: const Color(0xFF2D6A00),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 72, vertical: 20),
@@ -137,7 +137,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
-                      shadowColor: const Color(0xFF9B59B6),
+                      shadowColor: const Color(0xFF44AA00),
                       elevation: 12,
                     ),
                     child: const Text('PLAY'),
@@ -145,18 +145,18 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                   const SizedBox(height: 16),
                   TextButton.icon(
                     onPressed: _showShop,
-                    icon: const Text('⚡', style: TextStyle(fontSize: 16)),
+                    icon: const Text('🔧', style: TextStyle(fontSize: 16)),
                     label: const Text(
                       'SHOP',
                       style: TextStyle(
-                        color: Color(0xFFFFD700),
+                        color: Color(0xFF66FF00),
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 4,
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      foregroundColor: const Color(0xFFFFD700),
+                      foregroundColor: const Color(0xFF66FF00),
                     ),
                   ),
                   const Spacer(flex: 2),
@@ -165,7 +165,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
             ),
           ),
 
-          // Coin balance — top-left corner
+          // Scrap balance — top-left corner
           SafeArea(
             child: Align(
               alignment: Alignment.topLeft,
@@ -174,12 +174,12 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('⚡', style: TextStyle(fontSize: 14)),
+                    const Text('🔩', style: TextStyle(fontSize: 14)),
                     const SizedBox(width: 4),
                     Text(
                       '${CoinManager.instance.totalCoins}',
                       style: const TextStyle(
-                        color: Color(0xCCFFD700),
+                        color: Color(0xCC66FF00),
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
@@ -252,36 +252,26 @@ class _MenuBackgroundState extends State<_MenuBackground>
 final _bgData = _genBgData();
 
 ({
-  List<List<double>> stars,
-  List<List<double>> asteroids,
-  List<List<double>> ships,
+  List<List<double>> debris,
+  List<List<double>> zombies,
 }) _genBgData() {
   final rng = math.Random(42);
-  final stars = List.generate(
-    30,
-    (_) => [rng.nextDouble(), rng.nextDouble(), rng.nextDouble() * 0.05 + 0.02],
+  final debris = List.generate(
+    35,
+    (_) => [rng.nextDouble(), rng.nextDouble(), rng.nextDouble() * 0.05 + 0.02,
+             rng.nextDouble() * math.pi * 2, (rng.nextDouble() - 0.5) * 0.6,
+             rng.nextDouble() * 6 + 3],
   );
-  final asteroids = List.generate(
-    6,
+  final zombies = List.generate(
+    5,
     (_) => [
       rng.nextDouble(), // x fraction
       rng.nextDouble(), // y0 fraction
-      rng.nextDouble() * 0.04 + 0.01, // drift speed
-      rng.nextDouble() * math.pi * 2, // initial rotation
-      (rng.nextDouble() - 0.5) * 0.8, // rotation speed (rad/s)
-      rng.nextDouble() * 10 + 8, // radius px
+      rng.nextDouble() * 0.025 + 0.008, // drift speed
+      rng.nextDouble() * math.pi * 2, // heading angle
     ],
   );
-  final ships = List.generate(
-    4,
-    (_) => [
-      rng.nextDouble(), // x fraction
-      rng.nextDouble(), // y0 fraction
-      rng.nextDouble() * 0.035 + 0.012, // drift speed
-      rng.nextDouble() * math.pi * 2 - math.pi, // heading angle
-    ],
-  );
-  return (stars: stars, asteroids: asteroids, ships: ships);
+  return (debris: debris, zombies: zombies);
 }
 
 class _MenuBgPainter extends CustomPainter {
@@ -290,28 +280,18 @@ class _MenuBgPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    _paintStars(canvas, size);
-    _paintAsteroids(canvas, size);
-    _paintShips(canvas, size);
+    _paintDebris(canvas, size);
+    _paintZombies(canvas, size);
   }
 
-  void _paintStars(Canvas canvas, Size size) {
-    final paint = Paint()..color = const Color(0x33FFFFFF);
-    for (final s in _bgData.stars) {
-      final x = s[0] * size.width;
-      final y = ((s[1] + t * s[2]) % 1.0) * size.height;
-      canvas.drawCircle(Offset(x, y), 1.2, paint);
-    }
-  }
-
-  void _paintAsteroids(Canvas canvas, Size size) {
+  void _paintDebris(Canvas canvas, Size size) {
     const rFactors = [0.90, 0.68, 0.85, 0.72, 1.00, 0.65, 0.88, 0.75];
     final paint = Paint()
-      ..color = const Color(0x228B7355)
+      ..color = const Color(0x225A6A4A)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.2;
 
-    for (final s in _bgData.asteroids) {
+    for (final s in _bgData.debris) {
       final x = s[0] * size.width;
       final rawY = (s[1] + t * s[2]) % 1.0;
       final y = rawY * size.height;
@@ -341,9 +321,12 @@ class _MenuBgPainter extends CustomPainter {
     }
   }
 
-  void _paintShips(Canvas canvas, Size size) {
-    final paint = Paint()..color = const Color(0x22CC4444);
-    for (final s in _bgData.ships) {
+  void _paintZombies(Canvas canvas, Size size) {
+    // Faint zombie silhouettes drifting across the screen
+    final bodyPaint = Paint()..color = const Color(0x224A6A3A);
+    final eyePaint = Paint()..color = const Color(0x44CC4400);
+
+    for (final s in _bgData.zombies) {
       final x = s[0] * size.width;
       final rawY = (s[1] + t * s[2]) % 1.0;
       final y = rawY * size.height;
@@ -353,14 +336,18 @@ class _MenuBgPainter extends CustomPainter {
       canvas.translate(x, y);
       canvas.rotate(angle);
 
-      const r = 7.0;
-      final path = Path()
-        ..moveTo(0, -r)
-        ..lineTo(r * 0.55, r * 0.65)
-        ..lineTo(0, r * 0.3)
-        ..lineTo(-r * 0.55, r * 0.65)
-        ..close();
-      canvas.drawPath(path, paint);
+      const r = 8.0;
+      // Body blob
+      canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: r * 1.4, height: r * 2), bodyPaint);
+      // Head
+      canvas.drawCircle(const Offset(0, -r * 1.4), r * 0.6, bodyPaint);
+      // Outstretched arms
+      canvas.drawLine(const Offset(-r * 0.5, -r * 0.2), const Offset(-r * 1.5, r * 0.2), bodyPaint..strokeWidth = 2);
+      canvas.drawLine(const Offset(r * 0.5, -r * 0.2), const Offset(r * 1.5, r * 0.2), bodyPaint..strokeWidth = 2);
+      // Glowing eyes
+      canvas.drawCircle(Offset(-r * 0.2, -r * 1.5), r * 0.18, eyePaint);
+      canvas.drawCircle(Offset(r * 0.2, -r * 1.5), r * 0.18, eyePaint);
+
       canvas.restore();
     }
   }

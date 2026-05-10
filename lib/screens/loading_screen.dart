@@ -34,7 +34,7 @@ class _LoadingScreenState extends State<LoadingScreen>
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF0D0D2B), Color(0xFF060612)],
+            colors: [Color(0xFF0A0F05), Color(0xFF050800)],
           ),
         ),
         child: Center(
@@ -44,21 +44,21 @@ class _LoadingScreenState extends State<LoadingScreen>
               AnimatedBuilder(
                 animation: _glow,
                 builder: (_, __) => Text(
-                  'NOVABOLT',
+                  'NECROBLITZ',
                   style: TextStyle(
-                    color: const Color(0xFFFFD700),
-                    fontSize: 54,
+                    color: const Color(0xFF66FF00),
+                    fontSize: 48,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 10,
+                    letterSpacing: 8,
                     shadows: [
                       Shadow(
                         color: Color.fromRGBO(
-                            255, 215, 0, 0.35 + _glow.value * 0.45),
+                            102, 255, 0, 0.35 + _glow.value * 0.45),
                         blurRadius: 22 + _glow.value * 22,
                       ),
                       Shadow(
                         color: Color.fromRGBO(
-                            244, 168, 0, 0.15 + _glow.value * 0.2),
+                            204, 68, 0, 0.15 + _glow.value * 0.2),
                         blurRadius: 60,
                       ),
                     ],
@@ -67,7 +67,7 @@ class _LoadingScreenState extends State<LoadingScreen>
               ),
               const SizedBox(height: 10),
               const Text(
-                'SURVIVE · UPGRADE · CONQUER',
+                'SURVIVE · UPGRADE · ELIMINATE',
                 style: TextStyle(
                   color: Color(0x99F5F5DC),
                   fontSize: 12,
@@ -82,7 +82,7 @@ class _LoadingScreenState extends State<LoadingScreen>
                 child: CircularProgressIndicator(
                   strokeWidth: 2.5,
                   valueColor:
-                      AlwaysStoppedAnimation<Color>(Color(0xFF9B59B6)),
+                      AlwaysStoppedAnimation<Color>(Color(0xFF44AA00)),
                 ),
               ),
               const SizedBox(height: 20),

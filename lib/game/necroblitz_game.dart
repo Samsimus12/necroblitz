@@ -23,7 +23,7 @@ import 'systems/supercharge_system.dart';
 import 'systems/wave_system.dart';
 import 'systems/xp_system.dart';
 
-class NovaboltGame extends FlameGame with HasCollisionDetection {
+class NecroblitzGame extends FlameGame with HasCollisionDetection {
   late Player player;
   late JoystickComponent joystick;
   late JoystickComponent aimJoystick;
@@ -53,16 +53,16 @@ class NovaboltGame extends FlameGame with HasCollisionDetection {
 
   @override
   Color backgroundColor() => switch (_visualPhase) {
-        0 => const Color(0xFF0D0D2B),  // deep space
-        1 => const Color(0xFF06031C),  // alien planet sky
-        2 => const Color(0xFF0A0018),  // nebula purple
-        3 => const Color(0xFF150000),  // blood moon red
-        4 => const Color(0xFF08000F),  // void storm
-        5 => const Color(0xFF001520),  // crystal cavern
-        6 => const Color(0xFF1A0800),  // solar flare
-        7 => const Color(0xFF000505),  // galactic core
-        8 => const Color(0xFF020006),  // shadow realm
-        _ => const Color(0xFF000000),  // singularity
+        0 => const Color(0xFF0A0C08),  // city ruins
+        1 => const Color(0xFF1A1208),  // industrial wasteland
+        2 => const Color(0xFF001A00),  // toxic sewers
+        3 => const Color(0xFF150000),  // blood streets
+        4 => const Color(0xFF050F00),  // radioactive zone
+        5 => const Color(0xFF00080F),  // frozen wastes
+        6 => const Color(0xFF1A0800),  // burning city
+        7 => const Color(0xFF060604),  // underground bunker
+        8 => const Color(0xFF030100),  // dead forest
+        _ => const Color(0xFF0A0000),  // horde mind
       };
 
   @override

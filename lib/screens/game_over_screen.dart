@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../ads/ad_manager.dart';
 import '../coins/coin_manager.dart';
-import '../game/novabolt_game.dart';
+import '../game/necroblitz_game.dart';
 import '../stats/stats_manager.dart';
 
 class GameOverScreen extends StatefulWidget {
-  final NovaboltGame game;
+  final NecroblitzGame game;
   final VoidCallback? onMenu;
   const GameOverScreen({super.key, required this.game, this.onMenu});
 
@@ -123,12 +123,12 @@ class _GameOverScreenState extends State<GameOverScreen> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('⚡', style: TextStyle(fontSize: 15)),
+                const Text('🔩', style: TextStyle(fontSize: 15)),
                 const SizedBox(width: 5),
                 Text(
-                  '+$_coinsEarned NOVA',
+                  '+$_coinsEarned SCRAPS',
                   style: const TextStyle(
-                    color: Color(0xFFFFD700),
+                    color: Color(0xFF66FF00),
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -155,7 +155,7 @@ class _GameOverScreenState extends State<GameOverScreen> {
             ElevatedButton(
               onPressed: _playAgain,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF9B59B6),
+                backgroundColor: const Color(0xFF2D6A00),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                     horizontal: 48, vertical: 18),

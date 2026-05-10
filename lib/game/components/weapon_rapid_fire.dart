@@ -9,7 +9,7 @@ class WeaponRapidFire extends Weapon {
   WeaponRapidFire() : super(damage: 9, fireRate: 4.0);
 
   @override
-  String get displayName => 'Pulse Cannon';
+  String get displayName => 'Machine Gun';
 
   @override
   String get nextUpgradeDescription => 'Fire rate +20%';

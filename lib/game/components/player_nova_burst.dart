@@ -3,10 +3,10 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 import 'weapon_magic_bolt.dart';
 
-class PlayerNovaBurst extends Component with HasGameReference<NovaboltGame> {
+class PlayerNovaBurst extends Component with HasGameReference<NecroblitzGame> {
   final int shotCount;
   final Color color;
   final double damage;

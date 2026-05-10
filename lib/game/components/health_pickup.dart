@@ -4,11 +4,11 @@ import 'dart:ui';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 import 'player.dart';
 
 class HealthPickup extends PositionComponent
-    with HasGameReference<NovaboltGame>, CollisionCallbacks {
+    with HasGameReference<NecroblitzGame>, CollisionCallbacks {
   static const double healAmount = 30.0;
   static const double _lifetime = 8.0;
 

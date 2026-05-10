@@ -1,11 +1,11 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 import 'monster.dart';
 
 class Projectile extends PositionComponent
-    with HasGameReference<NovaboltGame>, CollisionCallbacks {
+    with HasGameReference<NecroblitzGame>, CollisionCallbacks {
   final Vector2 direction;
   final double speed;
   final double damage;

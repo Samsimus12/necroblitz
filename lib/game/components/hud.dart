@@ -5,10 +5,10 @@ import 'package:flame/text.dart';
 import 'package:flutter/painting.dart' show TextStyle, FontWeight;
 
 import 'monster_boss.dart';
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 import '../systems/supercharge_system.dart';
 
-class Hud extends PositionComponent with HasGameReference<NovaboltGame> {
+class Hud extends PositionComponent with HasGameReference<NecroblitzGame> {
   Hud() : super(priority: 10);
 
   static final _labelStyle = TextPaint(
@@ -71,9 +71,9 @@ class Hud extends PositionComponent with HasGameReference<NovaboltGame> {
     final fraction = game.superchargeSystem.fraction;
     final state = game.superchargeSystem.stateNotifier.value;
     final isLit = state == SuperchargeState.ready || state == SuperchargeState.active;
-    final fg = isLit ? const Color(0xFF00E5FF) : const Color(0xFF006E8A);
-    _drawBar(canvas, x: x, y: y, w: w, h: h, fraction: fraction, fg: fg, bg: const Color(0xFF06141A));
-    _labelStyle.render(canvas, 'NOVA', Vector2(x + 4, y + 2));
+    final fg = isLit ? const Color(0xFF44FF88) : const Color(0xFF1A5C30);
+    _drawBar(canvas, x: x, y: y, w: w, h: h, fraction: fraction, fg: fg, bg: const Color(0xFF061A0E));
+    _labelStyle.render(canvas, 'BLITZ', Vector2(x + 4, y + 2));
   }
 
   void _drawXpBar(Canvas canvas, double screenW, double screenH) {

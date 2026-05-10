@@ -5,13 +5,13 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import '../data/monster_data.dart';
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 import 'death_particles.dart';
 import 'health_pickup.dart';
 import 'shield_pickup.dart';
 
 abstract class Monster extends PositionComponent
-    with HasGameReference<NovaboltGame> {
+    with HasGameReference<NecroblitzGame> {
   final MonsterStats stats;
   late double currentHp;
   bool isDead = false;

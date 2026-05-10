@@ -10,7 +10,7 @@ class WeaponSpreadShot extends Weapon {
   WeaponSpreadShot() : super(damage: 10, fireRate: 1.5);
 
   @override
-  String get displayName => 'Scatter Cannon';
+  String get displayName => 'Shotgun';
 
   @override
   String get nextUpgradeDescription => 'Damage +30%';

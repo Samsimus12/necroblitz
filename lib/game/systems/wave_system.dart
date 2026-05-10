@@ -17,9 +17,9 @@ import '../components/monster_caster.dart';
 import '../components/monster_grunt.dart';
 import '../components/monster_speeder.dart';
 import '../components/monster_tank.dart';
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 
-class WaveSystem extends Component with HasGameReference<NovaboltGame> {
+class WaveSystem extends Component with HasGameReference<NecroblitzGame> {
   double _timer = 0;
   double _tankTimer = 0;
   bool _isBossFight = false;

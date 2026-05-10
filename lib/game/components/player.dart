@@ -5,74 +5,66 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 import '../../coins/coin_manager.dart';
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 import 'monster.dart';
 import 'monster_boss.dart';
 import 'weapon.dart';
 import 'weapon_magic_bolt.dart';
 
-class _SkinPalette {
-  final Color fuselage;
-  final Color wings;
-  final Color cockpit;
-  final Color glow;
+class _OutfitPalette {
+  final Color jacket;
+  final Color pants;
   final Color highlight;
-  const _SkinPalette({
-    required this.fuselage,
-    required this.wings,
-    required this.cockpit,
-    required this.glow,
+  final Color glow;
+  const _OutfitPalette({
+    required this.jacket,
+    required this.pants,
     required this.highlight,
+    required this.glow,
   });
 }
 
-_SkinPalette _paletteForSkin(String skin) => switch (skin) {
-      'ice' => const _SkinPalette(
-          fuselage: Color(0xFF4DD0E1),
-          wings: Color(0xFF0097A7),
-          cockpit: Color(0xFFE0F7FA),
+_OutfitPalette _paletteForSkin(String skin) => switch (skin) {
+      'ice' => const _OutfitPalette(
+          jacket: Color(0xFF4DD0E1),
+          pants: Color(0xFF0097A7),
+          highlight: Color(0xFFE0F7FA),
           glow: Color(0xAA00B8D4),
-          highlight: Color(0xFF80DEEA),
         ),
-      'flame' => const _SkinPalette(
-          fuselage: Color(0xFFFF5722),
-          wings: Color(0xFFBF360C),
-          cockpit: Color(0xFFFFAB91),
+      'flame' => const _OutfitPalette(
+          jacket: Color(0xFFFF5722),
+          pants: Color(0xFFBF360C),
+          highlight: Color(0xFFFFAB91),
           glow: Color(0xAADD2C00),
-          highlight: Color(0xFFFF8A65),
         ),
-      'shadow' => const _SkinPalette(
-          fuselage: Color(0xFF9C27B0),
-          wings: Color(0xFF4A0072),
-          cockpit: Color(0xFFEA80FC),
-          glow: Color(0xAA7B1FA2),
-          highlight: Color(0xFFCE93D8),
+      'shadow' => const _OutfitPalette(
+          jacket: Color(0xFF424242),
+          pants: Color(0xFF212121),
+          highlight: Color(0xFF757575),
+          glow: Color(0xAA616161),
         ),
-      'solar' => const _SkinPalette(
-          fuselage: Color(0xFFFFD600),
-          wings: Color(0xFFF57F17),
-          cockpit: Color(0xFFFFFFFF),
+      'solar' => const _OutfitPalette(
+          jacket: Color(0xFFFFD600),
+          pants: Color(0xFFF57F17),
+          highlight: Color(0xFFFFFFFF),
           glow: Color(0xAAFF8F00),
-          highlight: Color(0xFFFFF176),
         ),
-      'void' => const _SkinPalette(
-          fuselage: Color(0xFF00B0FF),
-          wings: Color(0xFF0D47A1),
-          cockpit: Color(0xFF80D8FF),
-          glow: Color(0xAA0091EA),
-          highlight: Color(0xFFB3E5FC),
+      'void' => const _OutfitPalette(
+          jacket: Color(0xFF6A1B9A),
+          pants: Color(0xFF4A148C),
+          highlight: Color(0xFFCE93D8),
+          glow: Color(0xAA7B1FA2),
         ),
-      _ => const _SkinPalette(
-          fuselage: Color(0xFFFFD700),
-          wings: Color(0xFFDDB500),
-          cockpit: Color(0xFF00E5FF),
-          glow: Color(0xAAFF7700),
-          highlight: Color(0xFFFFEE88),
+      _ => const _OutfitPalette(
+          jacket: Color(0xFF4CAF50),
+          pants: Color(0xFF2E7D32),
+          highlight: Color(0xFFA5D6A7),
+          glow: Color(0xAA388E3C),
         ),
     };
 
 class Player extends PositionComponent
-    with HasGameReference<NovaboltGame>, CollisionCallbacks {
+    with HasGameReference<NecroblitzGame>, CollisionCallbacks {
   double maxHp = 100;
   double currentHp = 100;
   double moveSpeed = 180;
@@ -98,7 +90,6 @@ class Player extends PositionComponent
   void update(double dt) {
     super.update(dt);
 
-    // Movement
     final delta = game.joystick.relativeDelta;
     if (delta.length > 0.05) {
       position += delta * moveSpeed * dt;
@@ -107,7 +98,6 @@ class Player extends PositionComponent
       position.y = position.y.clamp(r, game.size.y - r);
     }
 
-    // Update facing from aim joystick
     final aim = game.aimJoystick.relativeDelta;
     if (aim.length > 0.05) {
       _facingAngle = math.atan2(aim.y, aim.x) + math.pi / 2;
@@ -176,7 +166,7 @@ class Player extends PositionComponent
     final cx = size.x / 2;
     final cy = size.y / 2;
 
-    // Aim direction line — fades out toward the end
+    // Aim direction line
     final aimDelta = game.aimJoystick.relativeDelta;
     if (aimDelta.length > 0.05) {
       final dir = aimDelta.normalized();
@@ -192,7 +182,7 @@ class Player extends PositionComponent
           ..shader = Gradient.linear(
             Offset(cx, cy),
             Offset(endX, endY),
-            [const Color(0x9900E5FF), const Color(0x0000E5FF)],
+            [const Color(0x9900FF44), const Color(0x0000FF44)],
           ),
       );
     }
@@ -204,74 +194,83 @@ class Player extends PositionComponent
     canvas.rotate(_facingAngle);
     canvas.translate(-cx, -cy);
 
-    // Engine exhaust glow
-    final glowPaint = Paint()
-      ..color = pal.glow
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 5, cy + 16), width: 8, height: 11), glowPaint);
-    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 5, cy + 16), width: 8, height: 11), glowPaint);
+    // Ground shadow
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 2), width: 24, height: 10),
+      Paint()..color = const Color(0x44000000),
+    );
 
-    // Swept wings
-    final wingPath = Path()
-      ..moveTo(cx - 5, cy - 1)
-      ..lineTo(cx - 21, cy + 10)
-      ..lineTo(cx - 9, cy + 11)
-      ..close()
-      ..moveTo(cx + 5, cy - 1)
-      ..lineTo(cx + 21, cy + 10)
-      ..lineTo(cx + 9, cy + 11)
+    // Legs
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx - 5, cy + 10), width: 7, height: 12),
+      Paint()..color = pal.pants,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx + 5, cy + 10), width: 7, height: 12),
+      Paint()..color = pal.pants,
+    );
+
+    // Boots
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx - 5, cy + 16), width: 8, height: 5),
+      Paint()..color = const Color(0xFF3E2723),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx + 5, cy + 16), width: 8, height: 5),
+      Paint()..color = const Color(0xFF3E2723),
+    );
+
+    // Torso / jacket
+    final torso = Path()
+      ..moveTo(cx, cy - 10)
+      ..lineTo(cx + 9, cy - 3)
+      ..lineTo(cx + 8, cy + 7)
+      ..lineTo(cx, cy + 5)
+      ..lineTo(cx - 8, cy + 7)
+      ..lineTo(cx - 9, cy - 3)
       ..close();
-    canvas.drawPath(wingPath, Paint()..color = pal.wings);
-
-    // Main fuselage
-    final body = Path()
-      ..moveTo(cx, cy - 19)
-      ..lineTo(cx + 7, cy - 4)
-      ..lineTo(cx + 8, cy + 12)
-      ..lineTo(cx, cy + 8)
-      ..lineTo(cx - 8, cy + 12)
-      ..lineTo(cx - 7, cy - 4)
-      ..close();
-    canvas.drawPath(body, Paint()..color = pal.fuselage);
-
-    // Hull highlight stroke
+    canvas.drawPath(torso, Paint()..color = pal.jacket);
     canvas.drawPath(
-      body,
+      torso,
       Paint()
         ..color = pal.highlight
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.0,
+        ..strokeWidth = 0.8,
     );
 
-    // Cockpit window
+    // Arms
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 7), width: 9, height: 11),
-      Paint()..color = pal.cockpit,
+      Rect.fromCenter(center: Offset(cx - 12, cy - 4), width: 7, height: 14),
+      Paint()..color = pal.jacket,
     );
-    // Cockpit glare
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx - 1.5, cy - 10), width: 3, height: 4),
+      Rect.fromCenter(center: Offset(cx + 12, cy + 1), width: 7, height: 10),
+      Paint()..color = pal.jacket,
+    );
+
+    // Head / helmet
+    final headGlow = Paint()
+      ..color = pal.glow
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+    canvas.drawCircle(Offset(cx, cy - 12), 9, headGlow);
+    canvas.drawCircle(Offset(cx, cy - 12), 8, Paint()..color = const Color(0xFFBCAAA4));
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy - 12), width: 9, height: 7),
+      Paint()..color = pal.highlight.withAlpha(180),
+    );
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx - 1.5, cy - 14), width: 3, height: 3),
       Paint()..color = const Color(0xAAFFFFFF),
     );
 
-    // Engine pods
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx - 5, cy + 13), width: 7, height: 5),
-      Paint()..color = const Color(0xFF1A1A3A),
+    // Gun barrel (pointing forward = up)
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(cx - 9, cy - 11), width: 4, height: 10),
+      Paint()..color = const Color(0xFF263238),
     );
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx + 5, cy + 13), width: 7, height: 5),
-      Paint()..color = const Color(0xFF1A1A3A),
-    );
-
-    // Engine fire cores
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx - 5, cy + 15), width: 5, height: 4),
-      Paint()..color = const Color(0xFFFF9900),
-    );
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx + 5, cy + 15), width: 5, height: 4),
-      Paint()..color = const Color(0xFFFF9900),
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(cx - 9, cy - 17), width: 3, height: 4),
+      Paint()..color = const Color(0xFF455A64),
     );
 
     final hpFraction = (currentHp / maxHp).clamp(0.0, 1.0);
@@ -283,21 +282,16 @@ class Player extends PositionComponent
   }
 
   void _renderDamage(Canvas canvas, double cx, double cy, double hpFraction) {
-    // 75% — hairline cracks on fuselage
-    final crackPaint = Paint()
-      ..color = const Color(0xBB000000)
-      ..strokeWidth = 0.9
-      ..style = PaintingStyle.stroke;
-    canvas.drawLine(Offset(cx - 3, cy - 10), Offset(cx - 1, cy - 3), crackPaint);
-    canvas.drawLine(Offset(cx + 3, cy + 1), Offset(cx + 5, cy + 7), crackPaint);
+    final stainPaint = Paint()..color = const Color(0xBB880000);
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 3, cy - 5), width: 5, height: 4), stainPaint);
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 4, cy + 2), width: 4, height: 3), stainPaint);
 
     if (hpFraction >= 0.50) return;
 
-    // 50% — more cracks + dark smoke from right engine
-    canvas.drawLine(Offset(cx - 6, cy + 1), Offset(cx - 4, cy + 8), crackPaint);
-    canvas.drawLine(Offset(cx + 1, cy - 14), Offset(cx + 5, cy - 9), crackPaint);
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 5, cy + 3), width: 5, height: 4), stainPaint);
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 2, cy - 7), width: 4, height: 4), stainPaint);
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx + 5, cy + 19), width: 9, height: 7),
+      Rect.fromCenter(center: Offset(cx + 6, cy + 12), width: 10, height: 8),
       Paint()
         ..color = const Color(0x77333333)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5),
@@ -305,46 +299,35 @@ class Player extends PositionComponent
 
     if (hpFraction >= 0.25) return;
 
-    // 25% — fire from left engine + scorched wing overlay
-    canvas.drawPath(
-      Path()
-        ..moveTo(cx - 5, cy - 1)
-        ..lineTo(cx - 21, cy + 10)
-        ..lineTo(cx - 9, cy + 11)
-        ..close(),
-      Paint()..color = const Color(0x66220000),
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx - 6, cy - 2), width: 12, height: 8),
+      Paint()..color = const Color(0x66440000),
     );
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx - 5, cy + 17), width: 10, height: 9),
+      Rect.fromCenter(center: Offset(cx - 5, cy + 8), width: 10, height: 9),
       Paint()
         ..color = const Color(0xCCFF4400)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
-    canvas.drawLine(Offset(cx + 1, cy - 6), Offset(cx - 2, cy + 4),
-        Paint()
-          ..color = const Color(0xFFFF6600)
-          ..strokeWidth = 1.2
-          ..style = PaintingStyle.stroke);
 
     if (hpFraction >= 0.10) return;
 
-    // 10% — pulsing red danger glow + both engines on fire
     final pulse = math.sin(_damageTime * 10) * 0.5 + 0.5;
     final pulseAlpha = (80 + pulse * 120).toInt();
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 2), width: 28, height: 42),
+      Rect.fromCenter(center: Offset(cx, cy), width: 30, height: 42),
       Paint()
         ..color = Color.fromARGB(pulseAlpha ~/ 2, 255, 0, 0)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12),
     );
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx - 5, cy + 19), width: 11, height: 10),
+      Rect.fromCenter(center: Offset(cx - 5, cy + 10), width: 11, height: 10),
       Paint()
         ..color = Color.fromARGB(pulseAlpha, 255, 100, 0)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
     );
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx + 5, cy + 19), width: 11, height: 10),
+      Rect.fromCenter(center: Offset(cx + 5, cy + 10), width: 11, height: 10),
       Paint()
         ..color = Color.fromARGB(pulseAlpha, 255, 100, 0)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
@@ -355,7 +338,7 @@ class Player extends PositionComponent
         'shield_plasma' => const Color(0xFFFF6B35),
         'shield_void'   => const Color(0xFFCC00FF),
         'shield_gold'   => const Color(0xFFFFD700),
-        _               => const Color(0xFF00E5FF),
+        _               => const Color(0xFF44FF88),
       };
 
   void _renderShield(Canvas canvas) {

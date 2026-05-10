@@ -4,10 +4,10 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 
 import '../../coins/coin_manager.dart';
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 import 'monster.dart';
 
-class SuperchargeLaser extends Component with HasGameReference<NovaboltGame> {
+class SuperchargeLaser extends Component with HasGameReference<NecroblitzGame> {
   static const double dps = 120.0;
   static const double halfWidth = 18.0;
 

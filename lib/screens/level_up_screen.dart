@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../game/data/upgrade_cards.dart';
-import '../game/novabolt_game.dart';
+import '../game/necroblitz_game.dart';
 
 class LevelUpScreen extends StatelessWidget {
-  final NovaboltGame game;
+  final NecroblitzGame game;
   const LevelUpScreen({super.key, required this.game});
 
   @override
@@ -12,7 +12,7 @@ class LevelUpScreen extends StatelessWidget {
     final cards = game.currentCards;
 
     return Material(
-      color: const Color(0xBB000010),
+      color: const Color(0xBB000A00),
       child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -82,14 +82,14 @@ class LevelUpScreen extends StatelessWidget {
 
 class _CardWidget extends StatelessWidget {
   final UpgradeCard card;
-  final NovaboltGame game;
+  final NecroblitzGame game;
 
   const _CardWidget({required this.card, required this.game});
 
   Color get _accent {
-    if (card is WeaponUpgradeCard) return const Color(0xFF9B59B6);
+    if (card is WeaponUpgradeCard) return const Color(0xFF44AA00);
     if (card is NewWeaponCard) return const Color(0xFFF4A800);
-    return const Color(0xFF00E5FF);
+    return const Color(0xFF44FF88);
   }
 
   @override
@@ -103,7 +103,7 @@ class _CardWidget extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 7),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: const Color(0xFF12082A),
+          color: const Color(0xFF08160A),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: _accent, width: 2),
         ),
@@ -228,7 +228,7 @@ class _InheritedNovaWidget extends StatelessWidget {
   final String modeName;
   const _InheritedNovaWidget({required this.modeName});
 
-  static const _cyan = Color(0xFF00E5FF);
+  static const _green = Color(0xFF44FF88);
 
   @override
   Widget build(BuildContext context) {
@@ -236,9 +236,9 @@ class _InheritedNovaWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF001A1F),
+        color: const Color(0xFF001A0E),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _cyan.withAlpha(120), width: 1.5),
+        border: Border.all(color: _green.withAlpha(120), width: 1.5),
       ),
       child: Row(
         children: [
@@ -246,11 +246,11 @@ class _InheritedNovaWidget extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: _cyan.withAlpha(30),
+              color: _green.withAlpha(30),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Center(
-              child: Text('⚡', style: TextStyle(fontSize: 20, color: _cyan)),
+              child: Text('⚡', style: TextStyle(fontSize: 20, color: _green)),
             ),
           ),
           const SizedBox(width: 14),
@@ -259,9 +259,9 @@ class _InheritedNovaWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Nova Beam Inherited',
+                  'Blitz Inherited',
                   style: TextStyle(
-                    color: _cyan,
+                    color: _green,
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
@@ -270,7 +270,7 @@ class _InheritedNovaWidget extends StatelessWidget {
                 Text(
                   modeName,
                   style: const TextStyle(
-                    color: Color(0xAA00E5FF),
+                    color: Color(0xAA44FF88),
                     fontSize: 12,
                   ),
                 ),
@@ -280,7 +280,7 @@ class _InheritedNovaWidget extends StatelessWidget {
           const Text(
             'AUTO',
             style: TextStyle(
-              color: _cyan,
+              color: _green,
               fontSize: 11,
               fontWeight: FontWeight.bold,
               letterSpacing: 1,

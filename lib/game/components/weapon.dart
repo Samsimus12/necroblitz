@@ -1,8 +1,8 @@
 import 'package:flame/components.dart';
 
-import '../novabolt_game.dart';
+import '../necroblitz_game.dart';
 
-abstract class Weapon extends Component with HasGameReference<NovaboltGame> {
+abstract class Weapon extends Component with HasGameReference<NecroblitzGame> {
   double damage;
   double fireRate;
   int upgradeLevel = 1;

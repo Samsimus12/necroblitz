@@ -5,6 +5,7 @@ import '../data/monster_data.dart';
 import 'caster_projectile.dart';
 import 'monster.dart';
 
+// Spitter zombie — ranged zombie that hurls bile from distance.
 class MonsterCaster extends Monster {
   static const _preferredRange = 200.0;
   static const _retreatRange = 130.0;
@@ -16,9 +17,9 @@ class MonsterCaster extends Monster {
       : super(stats: casterStats.scaled(playerLevel));
 
   static const _deathColors = [
-    Color(0xFF7C4DFF), Color(0xFF00E5FF), Color(0xFFFF00FF),
-    Color(0xFFCC0000), Color(0xFF8800FF), Color(0xFF00FFFF),
-    Color(0xFFFFAA00), Color(0xFF00FFCC), Color(0xFF5500AA), Color(0xFFFFFFFF),
+    Color(0xFF44AA00), Color(0xFF00AACC), Color(0xFF88FF00),
+    Color(0xFFCC0000), Color(0xFF66CC00), Color(0xFF00FFCC),
+    Color(0xFFFFAA00), Color(0xFFAAAAAA), Color(0xFF552200), Color(0xFFFF0044),
   ];
 
   @override
@@ -66,11 +67,11 @@ class MonsterCaster extends Monster {
 
     switch (game.bossPhase % 10) {
       case 0:
-        _renderOrganic(canvas, cx, cy, r, angle);
+        _renderRotten(canvas, cx, cy, r, angle);
       case 1:
-        _renderMechanical(canvas, cx, cy, r, angle);
+        _renderAcid(canvas, cx, cy, r, angle);
       case 2:
-        _renderVoid(canvas, cx, cy, r, angle);
+        _renderToxic(canvas, cx, cy, r, angle);
       default:
         _renderThemed(canvas, cx, cy, r, angle);
     }
@@ -79,52 +80,50 @@ class MonsterCaster extends Monster {
     renderFlash(canvas);
   }
 
-  // Phase 0 — purple hexagon mage
-  void _renderOrganic(Canvas canvas, double cx, double cy, double r, double angle) {
+  // Phase 0 — rotten spitter with bile sac
+  void _renderRotten(Canvas canvas, double cx, double cy, double r, double angle) {
+    // Bile glow around body
     canvas.drawCircle(Offset(cx, cy), r + 4, Paint()
-      ..color = const Color(0x557C4DFF)
+      ..color = const Color(0x5544AA00)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8));
 
-    final hex = Path();
-    for (int i = 0; i < 6; i++) {
-      final a = math.pi / 6 + i * math.pi / 3;
-      final x = cx + r * math.cos(a);
-      final y = cy + r * math.sin(a);
-      if (i == 0) hex.moveTo(x, y);
-      else hex.lineTo(x, y);
-    }
-    hex.close();
-    canvas.drawPath(hex, Paint()..color = const Color(0xFF311B92));
-    canvas.drawPath(hex, Paint()
-      ..color = const Color(0xFF7C4DFF)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5);
+    // Hunched body
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy), width: r * 2, height: r * 1.8),
+        Paint()..color = const Color(0xFF3D4A2A));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy), width: r * 2, height: r * 1.8),
+        Paint()..color = const Color(0xFF6A7A5A)..style = PaintingStyle.stroke..strokeWidth = 1.5);
 
+    // Bile sac (bulge aimed at player)
     canvas.save();
     canvas.translate(cx, cy);
     canvas.rotate(angle);
     canvas.drawRRect(
-      RRect.fromRectAndRadius(Rect.fromLTWH(2, -3, r - 2, 6), const Radius.circular(2)),
-      Paint()..color = const Color(0xFF4527A0),
+      RRect.fromRectAndRadius(Rect.fromLTWH(2, -4, r - 3, 8), const Radius.circular(3)),
+      Paint()..color = const Color(0xFF2A3D1A),
     );
-    canvas.drawCircle(Offset(r - 1, 0), 3, Paint()..color = const Color(0xFF76FF03));
+    canvas.drawCircle(Offset(r - 2, 0), 4, Paint()
+      ..color = const Color(0xAA66CC00)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3));
+    canvas.drawCircle(Offset(r - 2, 0), 2.5, Paint()..color = const Color(0xFF88FF00));
     canvas.restore();
 
+    // Glowing core
     canvas.drawCircle(Offset(cx, cy), 7, Paint()
-      ..color = const Color(0xAA76FF03)
+      ..color = const Color(0xAA44AA00)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
-    canvas.drawCircle(Offset(cx, cy), 4, Paint()..color = const Color(0xFFB2FF59));
+    canvas.drawCircle(Offset(cx, cy), 4, Paint()..color = const Color(0xFF66CC00));
 
+    // Charge ring (bile building up)
     final chargeAlpha = (_fireTimer / _fireInterval * 180).toInt().clamp(0, 180);
     canvas.drawCircle(Offset(cx, cy), 11, Paint()
-      ..color = Color.fromARGB(chargeAlpha, 118, 255, 3)
+      ..color = Color.fromARGB(chargeAlpha, 68, 170, 0)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5);
   }
 
-  // Phase 1 — chrome orbital turret
-  void _renderMechanical(Canvas canvas, double cx, double cy, double r, double angle) {
-    // Outer gear ring
+  // Phase 1 — acid-sprayer (chrome canister zombie)
+  void _renderAcid(Canvas canvas, double cx, double cy, double r, double angle) {
+    // Outer chrome ring
     canvas.drawCircle(Offset(cx, cy), r + 5, Paint()
       ..color = const Color(0xFF455A64)
       ..style = PaintingStyle.stroke
@@ -138,10 +137,8 @@ class MonsterCaster extends Monster {
       canvas.save();
       canvas.translate(tx, ty);
       canvas.rotate(a);
-      canvas.drawRect(
-        Rect.fromCenter(center: Offset.zero, width: 5, height: 3),
-        Paint()..color = const Color(0xFF546E7A),
-      );
+      canvas.drawRect(Rect.fromCenter(center: Offset.zero, width: 5, height: 3),
+          Paint()..color = const Color(0xFF546E7A));
       canvas.restore();
     }
 
@@ -149,10 +146,8 @@ class MonsterCaster extends Monster {
     final oct = Path();
     for (int i = 0; i < 8; i++) {
       final a = i * math.pi / 4;
-      final x = cx + r * math.cos(a);
-      final y = cy + r * math.sin(a);
-      if (i == 0) oct.moveTo(x, y);
-      else oct.lineTo(x, y);
+      if (i == 0) oct.moveTo(cx + r * math.cos(a), cy + r * math.sin(a));
+      else oct.lineTo(cx + r * math.cos(a), cy + r * math.sin(a));
     }
     oct.close();
     canvas.drawPath(oct, Paint()..color = const Color(0xFF455A64));
@@ -161,7 +156,7 @@ class MonsterCaster extends Monster {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5);
 
-    // Mechanical barrel
+    // Acid spray barrel
     canvas.save();
     canvas.translate(cx, cy);
     canvas.rotate(angle);
@@ -169,97 +164,92 @@ class MonsterCaster extends Monster {
       RRect.fromRectAndRadius(Rect.fromLTWH(2, -3, r - 2, 6), const Radius.circular(2)),
       Paint()..color = const Color(0xFF37474F),
     );
-    canvas.drawCircle(Offset(r - 1, 0), 3, Paint()..color = const Color(0xFF00E5FF));
+    canvas.drawCircle(Offset(r - 1, 0), 3, Paint()..color = const Color(0xFF44CC00));
     canvas.restore();
 
-    // Cyan inner core
+    // Acid core
     canvas.drawCircle(Offset(cx, cy), 7, Paint()
-      ..color = const Color(0xAA00E5FF)
+      ..color = const Color(0xAA44CC00)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
-    canvas.drawCircle(Offset(cx, cy), 4, Paint()..color = const Color(0xFF00E5FF));
+    canvas.drawCircle(Offset(cx, cy), 4, Paint()..color = const Color(0xFF66FF00));
 
     final chargeAlpha = (_fireTimer / _fireInterval * 180).toInt().clamp(0, 180);
     canvas.drawCircle(Offset(cx, cy), 11, Paint()
-      ..color = Color.fromARGB(chargeAlpha, 0, 229, 255)
+      ..color = Color.fromARGB(chargeAlpha, 68, 204, 0)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5);
   }
 
-  // Phase 2 — void eye with tendrils
-  void _renderVoid(Canvas canvas, double cx, double cy, double r, double angle) {
-    // Void aura
+  // Phase 2 — toxic void spitter with tendrils
+  void _renderToxic(Canvas canvas, double cx, double cy, double r, double angle) {
     canvas.drawCircle(Offset(cx, cy), r + 6, Paint()
-      ..color = const Color(0x55CC00FF)
+      ..color = const Color(0x5588FF00)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10));
 
-    // Dark body
-    canvas.drawCircle(Offset(cx, cy), r, Paint()..color = const Color(0xFF0D0020));
+    canvas.drawCircle(Offset(cx, cy), r, Paint()..color = const Color(0xFF0D2000));
 
-    // Spike/tendril border
+    // Tendrils
     for (int i = 0; i < 8; i++) {
       final a = i * math.pi / 4;
       canvas.drawLine(
         Offset(cx + r * math.cos(a), cy + r * math.sin(a)),
         Offset(cx + (r + 8) * math.cos(a), cy + (r + 8) * math.sin(a)),
-        Paint()
-          ..color = const Color(0xFFCC00FF)
-          ..strokeWidth = 1.5,
+        Paint()..color = const Color(0xFF44CC00)..strokeWidth = 1.5,
       );
     }
 
     canvas.drawCircle(Offset(cx, cy), r, Paint()
-      ..color = const Color(0xFFCC00FF)
+      ..color = const Color(0xFF44CC00)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5);
 
-    // Void barrel
+    // Acid barrel
     canvas.save();
     canvas.translate(cx, cy);
     canvas.rotate(angle);
     canvas.drawRRect(
       RRect.fromRectAndRadius(Rect.fromLTWH(2, -3, r - 2, 6), const Radius.circular(2)),
-      Paint()..color = const Color(0xFF1A0033),
+      Paint()..color = const Color(0xFF0D2000),
     );
-    canvas.drawCircle(Offset(r - 1, 0), 3, Paint()..color = const Color(0xFFFF00FF));
+    canvas.drawCircle(Offset(r - 1, 0), 3, Paint()..color = const Color(0xFF88FF00));
     canvas.restore();
 
-    // Central void eye
+    // Toxic eye
     canvas.drawCircle(Offset(cx, cy), 7, Paint()
-      ..color = const Color(0xAACC00FF)
+      ..color = const Color(0xAA88FF00)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5));
-    canvas.drawCircle(Offset(cx, cy), 5, Paint()..color = const Color(0xFFFF00FF));
+    canvas.drawCircle(Offset(cx, cy), 5, Paint()..color = const Color(0xFF88FF00));
     canvas.drawCircle(Offset(cx, cy), 2.5, Paint()..color = const Color(0xFF000000));
     canvas.drawCircle(Offset(cx, cy), 1, Paint()..color = const Color(0xFFFFFFFF));
 
     final chargeAlpha = (_fireTimer / _fireInterval * 180).toInt().clamp(0, 180);
     canvas.drawCircle(Offset(cx, cy), 11, Paint()
-      ..color = Color.fromARGB(chargeAlpha, 255, 0, 255)
+      ..color = Color.fromARGB(chargeAlpha, 136, 255, 0)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5);
   }
 
-  static const _hexBodyColor = [
-    Color(0xFF311B92), Color(0xFF455A64), Color(0xFF0D0020),
-    Color(0xFF3D0000), Color(0xFF1A0033), Color(0xFF002244),
-    Color(0xFF2A1500), Color(0xFF020808), Color(0xFF06000F), Color(0xFF050505),
+  static const _bodyColor = [
+    Color(0xFF2D3D1A), Color(0xFF455A64), Color(0xFF0D2000),
+    Color(0xFF3D0000), Color(0xFF1A3300), Color(0xFF001A1A),
+    Color(0xFF2A1500), Color(0xFF1A1A1A), Color(0xFF1A0A00), Color(0xFF220011),
   ];
-  static const _hexOutlineColor = [
-    Color(0xFF7C4DFF), Color(0xFF78909C), Color(0xFFCC00FF),
-    Color(0xFF880000), Color(0xFF6600CC), Color(0xFF00AAFF),
-    Color(0xFFCC7700), Color(0xFF00FFCC), Color(0xFF440088), Color(0xFFAAAAAA),
+  static const _outlineColor = [
+    Color(0xFF44AA00), Color(0xFF78909C), Color(0xFF88FF00),
+    Color(0xFF880000), Color(0xFF66CC00), Color(0xFF00AACC),
+    Color(0xFFCC7700), Color(0xFF888888), Color(0xFF552200), Color(0xFFCC0033),
   ];
   static const _coreColor = [
-    Color(0xFFB2FF59), Color(0xFF00E5FF), Color(0xFFFF00FF),
-    Color(0xFFFF2200), Color(0xFF9900FF), Color(0xFF00FFFF),
-    Color(0xFFFFDD00), Color(0xFF00FFAA), Color(0xFFAA00FF), Color(0xFFFFFFFF),
+    Color(0xFF66CC00), Color(0xFF44CC00), Color(0xFF88FF00),
+    Color(0xFFFF2200), Color(0xFF66FF00), Color(0xFF00FFCC),
+    Color(0xFFFFAA00), Color(0xFFCCCCCC), Color(0xFFFF6600), Color(0xFFFF0044),
   ];
 
   void _renderThemed(Canvas canvas, double cx, double cy, double r, double angle) {
     final p = (game.bossPhase % 10).clamp(0, 9);
-    final outlineColor = _hexOutlineColor[p];
+    final outlineColor = _outlineColor[p];
     final coreColor = _coreColor[p];
 
-    // Aura
     canvas.drawCircle(Offset(cx, cy), r + 4, Paint()
       ..color = outlineColor.withAlpha(80)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8));
@@ -272,32 +262,29 @@ class MonsterCaster extends Monster {
       else hex.lineTo(cx + r * math.cos(a), cy + r * math.sin(a));
     }
     hex.close();
-    canvas.drawPath(hex, Paint()..color = _hexBodyColor[p]);
+    canvas.drawPath(hex, Paint()..color = _bodyColor[p]);
     canvas.drawPath(hex, Paint()
       ..color = outlineColor..style = PaintingStyle.stroke..strokeWidth = 1.5);
 
-    // Rotating barrel
+    // Barrel
     canvas.save();
     canvas.translate(cx, cy);
     canvas.rotate(angle);
     canvas.drawRRect(
       RRect.fromRectAndRadius(Rect.fromLTWH(2, -3, r - 2, 6), const Radius.circular(2)),
-      Paint()..color = _hexBodyColor[p].withAlpha(220),
+      Paint()..color = _bodyColor[p].withAlpha(220),
     );
     canvas.drawCircle(Offset(r - 1, 0), 3, Paint()..color = coreColor);
     canvas.restore();
 
-    // Core glow + dot
     canvas.drawCircle(Offset(cx, cy), 7, Paint()
       ..color = coreColor.withAlpha(160)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
     canvas.drawCircle(Offset(cx, cy), 4, Paint()..color = coreColor);
 
-    // Charge ring
     final chargeAlpha = (_fireTimer / _fireInterval * 180).toInt().clamp(0, 180);
-    final chargeRgb = coreColor;
     canvas.drawCircle(Offset(cx, cy), 11, Paint()
-      ..color = chargeRgb.withAlpha(chargeAlpha)
+      ..color = coreColor.withAlpha(chargeAlpha)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5);
   }

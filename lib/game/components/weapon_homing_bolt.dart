@@ -11,7 +11,7 @@ class WeaponHomingBolt extends Weapon {
   WeaponHomingBolt() : super(damage: 12, fireRate: 1.5);
 
   @override
-  String get displayName => 'Homing Missile';
+  String get displayName => 'Tracking Dart';
 
   @override
   void fire(Vector2 playerPos, Vector2 direction) {

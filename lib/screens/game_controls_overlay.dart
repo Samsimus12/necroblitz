@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../game/novabolt_game.dart';
+import '../game/necroblitz_game.dart';
 import '../game/systems/supercharge_system.dart';
 
 class GameControlsOverlay extends StatefulWidget {
-  final NovaboltGame game;
+  final NecroblitzGame game;
   final VoidCallback onMenu;
 
   const GameControlsOverlay(
@@ -70,9 +70,9 @@ class _GameControlsOverlayState extends State<GameControlsOverlay> {
                 if (widget.game.unlockedNovaModes.length > 1) ...[
                   const SizedBox(height: 20),
                   const Text(
-                    'NOVA MODE',
+                    'BLITZ MODE',
                     style: TextStyle(
-                      color: Color(0xFF00E5FF),
+                      color: Color(0xFF44FF88),
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.none,
@@ -91,12 +91,12 @@ class _GameControlsOverlayState extends State<GameControlsOverlay> {
                             horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
                           color: isActive
-                              ? const Color(0x4400E5FF)
+                              ? const Color(0x4444FF88)
                               : const Color(0xAA000010),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: isActive
-                                ? const Color(0xFF00E5FF)
+                                ? const Color(0xFF44FF88)
                                 : const Color(0x33FFFFFF),
                             width: isActive ? 1.5 : 1,
                           ),
@@ -106,7 +106,7 @@ class _GameControlsOverlayState extends State<GameControlsOverlay> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: isActive
-                                ? const Color(0xFF00E5FF)
+                                ? const Color(0xFF44FF88)
                                 : const Color(0x99F5F5DC),
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -133,7 +133,7 @@ class _GameControlsOverlayState extends State<GameControlsOverlay> {
                   final isReady = state == SuperchargeState.ready;
                   final isActive = state == SuperchargeState.active;
                   return _HudButton(
-                    label: isActive ? '⚡ ACTIVE' : 'NOVA',
+                    label: isActive ? '⚡ ACTIVE' : 'BLITZ',
                     onTap: isReady ? widget.game.activateSupercharge : null,
                     highlight: isReady,
                   );
@@ -165,7 +165,7 @@ class _HudButton extends StatelessWidget {
           color: const Color(0xAA000010),
           borderRadius: BorderRadius.circular(8),
           border: highlight
-              ? Border.all(color: const Color(0xFF00E5FF), width: 1.5)
+              ? Border.all(color: const Color(0xFF44FF88), width: 1.5)
               : null,
         ),
         child: Text(
