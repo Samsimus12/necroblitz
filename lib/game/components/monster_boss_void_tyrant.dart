@@ -10,7 +10,7 @@ class MonsterBossVoidTyrant extends BossMonster {
       : super(stats: tyrantStats.scaled(playerLevel), playerLevel: playerLevel);
 
   @override
-  String get displayName => 'VOID TYRANT';
+  String get displayName => 'PLAGUE LORD';
 
   @override
   double get fireInterval => hpFraction > 0.4 ? 1.8 : 0.9;
@@ -35,7 +35,7 @@ class MonsterBossVoidTyrant extends BossMonster {
   Color get specialColor => const Color(0xFFFF00CC);
 
   @override
-  Color get deathColor => const Color(0xFFCC0000);
+  Color get deathColor => const Color(0xFF88AA22);
 
   @override
   void onDie() {
@@ -57,137 +57,62 @@ class MonsterBossVoidTyrant extends BossMonster {
     canvas.rotate(angle);
     canvas.translate(-cx, -cy);
 
-    // Engine exhaust glow
+    // Bile aura
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy + 48), width: 56, height: 30),
-      Paint()
-        ..color = const Color(0xAACC0000)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18),
-    );
+      Rect.fromCenter(center: Offset(cx, cy), width: 118, height: 112),
+      Paint()..color = const Color(0x2288AA00)
+             ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18));
 
-    // Outer swept wings
-    final leftWing = Path()
-      ..moveTo(cx - 10, cy - 10)
-      ..lineTo(cx - 54, cy + 10)
-      ..lineTo(cx - 52, cy + 32)
-      ..lineTo(cx - 24, cy + 26)
-      ..lineTo(cx - 14, cy + 12)
-      ..close();
-    final rightWing = Path()
-      ..moveTo(cx + 10, cy - 10)
-      ..lineTo(cx + 54, cy + 10)
-      ..lineTo(cx + 52, cy + 32)
-      ..lineTo(cx + 24, cy + 26)
-      ..lineTo(cx + 14, cy + 12)
-      ..close();
-    final wingPaint = Paint()..color = const Color(0xFF550000);
-    canvas.drawPath(leftWing, wingPaint);
-    canvas.drawPath(rightWing, wingPaint);
-
-    // Wing weapon pods
-    final podPaint = Paint()..color = const Color(0xFF330000);
-    canvas.drawRect(Rect.fromLTWH(cx - 57, cy + 8, 10, 16), podPaint);
-    canvas.drawRect(Rect.fromLTWH(cx + 47, cy + 8, 10, 16), podPaint);
-
-    // Wing gun barrel tips
-    final barrelPaint = Paint()..color = const Color(0xFF880000);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx - 52, cy + 2), width: 5, height: 12), barrelPaint);
-    canvas.drawRect(Rect.fromCenter(center: Offset(cx + 52, cy + 2), width: 5, height: 12), barrelPaint);
-    canvas.drawCircle(Offset(cx - 52, cy - 4), 3, Paint()..color = const Color(0xFFFF0000));
-    canvas.drawCircle(Offset(cx + 52, cy - 4), 3, Paint()..color = const Color(0xFFFF0000));
-
-    // Secondary forward swept fins
-    final leftFin = Path()
-      ..moveTo(cx - 8, cy - 14)
-      ..lineTo(cx - 30, cy + 2)
-      ..lineTo(cx - 28, cy + 16)
-      ..lineTo(cx - 12, cy + 10)
-      ..close();
-    final rightFin = Path()
-      ..moveTo(cx + 8, cy - 14)
-      ..lineTo(cx + 30, cy + 2)
-      ..lineTo(cx + 28, cy + 16)
-      ..lineTo(cx + 12, cy + 10)
-      ..close();
-    canvas.drawPath(leftFin, Paint()..color = const Color(0xFF660000));
-    canvas.drawPath(rightFin, Paint()..color = const Color(0xFF660000));
-
-    // Main hull
-    final hull = Path()
-      ..moveTo(cx, cy - 52)
-      ..lineTo(cx + 20, cy - 30)
-      ..lineTo(cx + 24, cy - 8)
-      ..lineTo(cx + 22, cy + 28)
-      ..lineTo(cx + 12, cy + 44)
-      ..lineTo(cx - 12, cy + 44)
-      ..lineTo(cx - 22, cy + 28)
-      ..lineTo(cx - 24, cy - 8)
-      ..lineTo(cx - 20, cy - 30)
-      ..close();
-    canvas.drawPath(hull, Paint()..color = const Color(0xFF660000));
-
-    // Armour panels
-    final armorPaint = Paint()..color = const Color(0xFF880000);
-    final leftPanel = Path()
-      ..moveTo(cx - 18, cy - 26)
-      ..lineTo(cx - 5, cy - 34)
-      ..lineTo(cx - 5, cy + 10)
-      ..lineTo(cx - 18, cy + 6)
-      ..close();
-    final rightPanel = Path()
-      ..moveTo(cx + 18, cy - 26)
-      ..lineTo(cx + 5, cy - 34)
-      ..lineTo(cx + 5, cy + 10)
-      ..lineTo(cx + 18, cy + 6)
-      ..close();
-    canvas.drawPath(leftPanel, armorPaint);
-    canvas.drawPath(rightPanel, armorPaint);
-
-    // Hull outline glow
-    canvas.drawPath(
-      hull,
-      Paint()
-        ..color = const Color(0xFFFF2222)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.5,
-    );
-
-    // Triple forward cannon barrels
-    final gunPaint = Paint()..color = const Color(0xFF330000);
-    for (final dx in [-10.0, 0.0, 10.0]) {
-      canvas.drawRect(
-        Rect.fromCenter(center: Offset(cx + dx, cy - 47), width: 5, height: 14),
-        gunPaint,
-      );
-    }
-    for (final dx in [-10.0, 0.0, 10.0]) {
-      canvas.drawCircle(Offset(cx + dx, cy - 54), 3, Paint()..color = const Color(0xFFFF0000));
+    // Fly swarm orbiting the body
+    for (int i = 0; i < 12; i++) {
+      final a = i * math.pi * 2 / 12;
+      canvas.drawCircle(Offset(cx + math.cos(a) * 52, cy + math.sin(a) * 50), 2.5,
+        Paint()..color = const Color(0xFF333300));
     }
 
-    // Bridge dome
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 16), width: 26, height: 22),
-      Paint()..color = const Color(0xFF440000),
-    );
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 16), width: 16, height: 9),
-      Paint()..color = const Color(0xFFFF0000),
-    );
-    canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx, cy - 16), width: 8, height: 5),
-      Paint()..color = const Color(0xFFFF6666),
-    );
+    // Massive bloated round body
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy), width: 78, height: 74),
+      Paint()..color = const Color(0xFF5A6A1A));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy), width: 78, height: 74),
+      Paint()..color = const Color(0xFF88AA22)..style = PaintingStyle.stroke..strokeWidth = 2.5);
 
-    // Engine bank
-    final enginePortPaint = Paint()..color = const Color(0xFF1A0000);
-    final engineFirePaint = Paint()..color = const Color(0xFFFF2200);
-    for (int i = -3; i <= 3; i++) {
-      final ex = cx + i * 9.0;
-      canvas.drawOval(
-          Rect.fromCenter(center: Offset(ex, cy + 42), width: 10, height: 7), enginePortPaint);
-      canvas.drawOval(
-          Rect.fromCenter(center: Offset(ex, cy + 44), width: 7, height: 5), engineFirePaint);
+    // Pustule bumps around the edge
+    for (int i = 0; i < 8; i++) {
+      final a = i * math.pi / 4 + math.pi / 8;
+      canvas.drawCircle(Offset(cx + math.cos(a) * 30, cy + math.sin(a) * 28), 7,
+        Paint()..color = const Color(0xFF6A7A22));
+      canvas.drawCircle(Offset(cx + math.cos(a) * 30, cy + math.sin(a) * 28), 3.5,
+        Paint()..color = const Color(0xFF88CC00));
     }
+
+    // Stubby arm stubs at sides
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 42, cy + 4), width: 18, height: 10),
+      Paint()..color = const Color(0xFF4A5A18));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 42, cy + 4), width: 18, height: 10),
+      Paint()..color = const Color(0xFF4A5A18));
+
+    // Sunken bloated head
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 18), width: 30, height: 26),
+      Paint()..color = const Color(0xFF4A5A18));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx, cy - 18), width: 30, height: 26),
+      Paint()..color = const Color(0xFF88AA22)..style = PaintingStyle.stroke..strokeWidth = 1.5);
+    // Glowing bile eyes
+    canvas.drawCircle(Offset(cx - 7, cy - 20), 5,
+      Paint()..color = const Color(0xFFAAFF00)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
+    canvas.drawCircle(Offset(cx + 7, cy - 20), 5,
+      Paint()..color = const Color(0xFFAAFF00)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
+    canvas.drawCircle(Offset(cx - 7, cy - 20), 3, Paint()..color = const Color(0xFF000000));
+    canvas.drawCircle(Offset(cx + 7, cy - 20), 3, Paint()..color = const Color(0xFF000000));
+    canvas.drawArc(Rect.fromCenter(center: Offset(cx, cy - 12), width: 20, height: 10),
+      0.1, math.pi - 0.2, false,
+      Paint()..color = const Color(0xFF88AA00)..strokeWidth = 2.0..style = PaintingStyle.stroke);
+
+    // Bile drips from belly
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx - 12, cy + 39), width: 6, height: 10),
+      Paint()..color = const Color(0xFF66AA00));
+    canvas.drawOval(Rect.fromCenter(center: Offset(cx + 8, cy + 40), width: 5, height: 8),
+      Paint()..color = const Color(0xFF66AA00));
+
 
     canvas.restore();
 

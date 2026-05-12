@@ -13,7 +13,7 @@ class MonsterBossLeviathan extends BossMonster {
       : super(stats: leviathanStats.scaled(playerLevel), playerLevel: playerLevel);
 
   @override
-  String get displayName => 'NEBULA LEVIATHAN';
+  String get displayName => 'GORE BEAST';
 
   @override
   double get fireInterval => hpFraction > 0.5 ? 2.5 : 1.4;

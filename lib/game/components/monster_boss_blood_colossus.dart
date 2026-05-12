@@ -13,7 +13,7 @@ class MonsterBossBloodColossus extends BossMonster {
       : super(stats: colossusStats.scaled(playerLevel), playerLevel: playerLevel);
 
   @override
-  String get displayName => 'BLOOD COLOSSUS';
+  String get displayName => 'TITAN ZOMBIE';
 
   @override
   double get fireInterval => hpFraction > 0.5 ? 2.2 : 1.1;
