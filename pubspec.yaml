@@ -82,7 +82,9 @@ flutter:
   assets:
     - assets/
     - assets/images/survivor/
-    - assets/images/background/phase0/
+    - assets/images/survivor/walk/
+    - assets/images/ss_survivor/
+    - assets/images/ss_zombie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
